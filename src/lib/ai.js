@@ -2,14 +2,43 @@
  * src/lib/ai.js
  * AI Assistant for "Eachother Being Together"
  *
- * Integrated with a 100% FREE, zero-signup, zero-key public AI endpoint (Pollinations AI)
- * with optional Gemini API support and offline fallback.
+ * Multi-tier AI architecture:
+ * 1. ⚡ Local Ollama (100% private, runs on GPU, zero cost, e.g. gemma3:4b)
+ * 2. 🌐 Free Public AI Endpoint (Pollinations AI, zero-signup, zero-key)
+ * 3. 🔑 Google Gemini API (optional custom key)
+ * 4. 📴 Curated smart local fallback templates (offline)
  */
 
 import { state } from './state.js';
 
 const POLLINATIONS_URL = 'https://text.pollinations.ai/';
 const GEMINI_MODEL = 'gemini-1.5-flash';
+
+let _cachedOllamaModel = null;
+
+/**
+ * Check if local Ollama is running and get model name
+ */
+export async function checkOllamaAvailable() {
+  if (_cachedOllamaModel) return _cachedOllamaModel;
+  try {
+    const res = await fetch('/api/ollama/api/tags');
+    if (res.ok) {
+      const data = await res.json();
+      const models = data.models || [];
+      if (models.length > 0) {
+        // Prefer gemma, llama, mistral if present, or take first
+        const best =
+          models.find(m => /gemma|llama|mistral/i.test(m.name)) || models[0];
+        _cachedOllamaModel = best.name;
+        return _cachedOllamaModel;
+      }
+    }
+  } catch {
+    /* Ollama not reachable */
+  }
+  return null;
+}
 
 /**
  * Get active API key (from state, localStorage, or environment variable)
@@ -42,7 +71,6 @@ export function setApiKey(key) {
 
 /**
  * Generate a personalized card based on couple's preferences.
- * Uses free public AI by default — works immediately without any key!
  */
 export async function generateAICard({ game, level, vibe = 'romantic', customNote = '' }) {
   const p1 = state.get('player1') || 'Partner 1';
@@ -63,7 +91,7 @@ CRITICAL INSTRUCTIONS:
 - For "would-you-rather": provide two distinct, intriguing options ("optionA" and "optionB").
 - Spicy cards must be passionate, suggestive, and thrilling, but always consensual, respectful, safe, and not graphically explicit.
 
-Respond ONLY with a valid JSON object (no markdown, no backticks, no markdown codeblocks):
+Respond ONLY with a valid JSON object (no markdown, no backticks):
 
 If truth-or-dare:
 {"type": "truth"|"dare", "text": "...", "timerSeconds": null or number}
@@ -74,7 +102,34 @@ If never-have-i-ever:
 If would-you-rather:
 {"optionA": "...", "optionB": "..."}`;
 
-  // 1. If user supplied a Gemini key, use Gemini
+  // 1. Check Local Ollama first (Fastest, 100% private on GPU!)
+  const ollamaModel = await checkOllamaAvailable();
+  if (ollamaModel) {
+    try {
+      const res = await fetch('/api/ollama/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: ollamaModel,
+          prompt: `${systemInstructions}\nGenerate one fresh couple card now in raw JSON.`,
+          stream: false,
+          format: 'json',
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const parsed = cleanAndParseJSON(data.response);
+        if (parsed) {
+          return { id: `ollama_${Date.now()}`, level, tags: ['ollama', ollamaModel, vibe], ...parsed };
+        }
+      }
+    } catch (e) {
+      console.warn('Ollama query error, falling back to cloud AI:', e);
+    }
+  }
+
+  // 2. Custom Gemini Key if configured
   if (customKey) {
     try {
       const res = await fetch(
@@ -97,15 +152,15 @@ If would-you-rather:
         const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
         const parsed = cleanAndParseJSON(raw);
         if (parsed) {
-          return { id: `ai_${Date.now()}`, level, tags: ['gemini', vibe], ...parsed };
+          return { id: `gemini_${Date.now()}`, level, tags: ['gemini', vibe], ...parsed };
         }
       }
     } catch (e) {
-      console.warn('Gemini error, falling back to free open AI:', e);
+      console.warn('Gemini error, falling back to open AI:', e);
     }
   }
 
-  // 2. Free Open AI Endpoint (Zero signup, zero key, instant response)
+  // 3. Free Open AI Endpoint (Zero signup, zero key)
   try {
     const res = await fetch(POLLINATIONS_URL, {
       method: 'POST',
@@ -131,7 +186,7 @@ If would-you-rather:
     console.warn('Free AI endpoint error, using curated template:', err);
   }
 
-  // 3. Instant local fallback
+  // 4. Instant local fallback
   return getLocalCuratedCard(game, level, vibe);
 }
 
@@ -147,7 +202,33 @@ export async function modifyCardWithAI(card, direction = 'spicier') {
 Original card: ${JSON.stringify(card)}
 Return ONLY a valid JSON object matching the exact original structure (fields: text, or optionA & optionB, and type if present). No markdown fences.`;
 
-  // Try custom key if present
+  // 1. Local Ollama
+  const ollamaModel = await checkOllamaAvailable();
+  if (ollamaModel) {
+    try {
+      const res = await fetch('/api/ollama/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: ollamaModel,
+          prompt: `${prompt}\nReturn raw JSON only.`,
+          stream: false,
+          format: 'json',
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const parsed = cleanAndParseJSON(data.response);
+        if (parsed) {
+          return { ...card, ...parsed, id: `ollama_mod_${Date.now()}` };
+        }
+      }
+    } catch (e) {
+      console.warn('Ollama modify error, falling back:', e);
+    }
+  }
+
+  // 2. Custom Gemini Key
   if (customKey) {
     try {
       const res = await fetch(
@@ -166,7 +247,7 @@ Return ONLY a valid JSON object matching the exact original structure (fields: t
         const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
         const parsed = cleanAndParseJSON(raw);
         if (parsed) {
-          return { ...card, ...parsed, id: `ai_mod_${Date.now()}` };
+          return { ...card, ...parsed, id: `gemini_mod_${Date.now()}` };
         }
       }
     } catch {
@@ -174,7 +255,7 @@ Return ONLY a valid JSON object matching the exact original structure (fields: t
     }
   }
 
-  // Free AI Endpoint
+  // 3. Free AI Endpoint
   try {
     const res = await fetch(POLLINATIONS_URL, {
       method: 'POST',
@@ -203,14 +284,13 @@ Return ONLY a valid JSON object matching the exact original structure (fields: t
   return getModifiedFallback(card, direction);
 }
 
-/** Helper to safely parse JSON even if surrounded by whitespace or accidental backticks */
+/** Helper to safely parse JSON */
 function cleanAndParseJSON(raw) {
   if (!raw) return null;
   try {
     const cleaned = raw.replace(/^```json/i, '').replace(/```$/i, '').trim();
     return JSON.parse(cleaned);
   } catch {
-    // Attempt extracting substring between { and }
     const match = raw.match(/\{[\s\S]*\}/);
     if (match) {
       try {

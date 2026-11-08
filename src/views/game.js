@@ -16,7 +16,7 @@ import { drawCard, deckProgress, addCustomCard } from '../lib/deck.js';
 import { sounds } from '../lib/sound.js';
 import { toast } from '../lib/toast.js';
 import { fireConfetti } from '../lib/confetti.js';
-import { generateAICard, modifyCardWithAI, getApiKey, setApiKey } from '../lib/ai.js';
+import { generateAICard, modifyCardWithAI, getApiKey, setApiKey, checkOllamaAvailable } from '../lib/ai.js';
 
 // --- Game module registry ---
 // Each module exports: { renderCardContent(card, el), onReveal(card, el), onDone() }
@@ -121,7 +121,7 @@ export async function renderGame(game) {
       <!-- AI Assistant Controls -->
       <div class="ai-controls-bar glass-card mb-4" style="padding: 0.85rem; border-color: rgba(196, 85, 106, 0.35);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
-          <span style="font-size: var(--text-xs); font-weight: 800; color: var(--color-rose); letter-spacing: 0.05em;">✨ AI CUPID ASSISTANT</span>
+          <span id="ai-status-badge" style="font-size: var(--text-xs); font-weight: 800; color: var(--color-rose); letter-spacing: 0.05em;">✨ AI CUPID ASSISTANT</span>
           <button class="btn-ghost btn-sm" id="btn-ai-toggle" style="font-size:var(--text-xs); padding: 0.2rem 0.6rem; min-height: unset; border-radius: var(--radius-full);">
             ⚙️ AI Vibe & Key
           </button>
@@ -205,6 +205,14 @@ export async function renderGame(game) {
   // Wire AI controls
   const aiKeyInput = document.getElementById('ai-key-input');
   if (aiKeyInput) aiKeyInput.value = getApiKey();
+
+  checkOllamaAvailable().then(model => {
+    const badge = document.getElementById('ai-status-badge');
+    if (badge && model) {
+      badge.textContent = `⚡ OLLAMA (${model.toUpperCase()}) ACTIVE`;
+      badge.style.color = '#16a34a';
+    }
+  });
 
   document.getElementById('btn-ai-toggle')?.addEventListener('click', () => {
     const panel = document.getElementById('ai-panel');
