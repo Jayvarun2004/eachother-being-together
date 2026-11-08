@@ -20,7 +20,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CARDS_DIR = path.resolve(__dirname, '../cards');
 
 const VALID_LEVELS = ['wholesome', 'flirty', 'spicy'];
-const VALID_GAMES = ['truth-or-dare', 'never-have-i-ever', 'would-you-rather'];
+const VALID_GAMES = ['truth-or-dare', 'never-have-i-ever', 'would-you-rather', 'who-is-most-likely'];
 const MIN_CARDS = 25;
 const MAX_TEXT_LENGTH = 300;
 const MIN_TEXT_LENGTH = 10;

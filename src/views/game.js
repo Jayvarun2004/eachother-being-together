@@ -23,11 +23,13 @@ import { generateAICard, modifyCardWithAI, getApiKey, setApiKey, checkOllamaAvai
 import { TruthOrDareGame } from '../../games/truth-or-dare/index.js';
 import { NeverHaveIEverGame } from '../../games/never-have-i-ever/index.js';
 import { WouldYouRatherGame } from '../../games/would-you-rather/index.js';
+import { WhoIsMostLikelyGame } from '../../games/who-is-most-likely/index.js';
 
 const GAME_MODULES = {
   'truth-or-dare':     TruthOrDareGame,
   'never-have-i-ever': NeverHaveIEverGame,
   'would-you-rather':  WouldYouRatherGame,
+  'who-is-most-likely': WhoIsMostLikelyGame,
 };
 
 // --- State for this session ---
@@ -452,7 +454,7 @@ function updateFrontFace() {
   const name = turn === 0 ? state.get('player1') : state.get('player2');
   const emojiEl = document.getElementById('front-emoji');
   const labelEl = document.getElementById('front-label');
-  const emojis = { 'truth-or-dare': '🎲', 'never-have-i-ever': '🙋', 'would-you-rather': '🤔' };
+  const emojis = { 'truth-or-dare': '🎲', 'never-have-i-ever': '🙋', 'would-you-rather': '🤔', 'who-is-most-likely': '🧠' };
   if (emojiEl) emojiEl.textContent = emojis[_game] ?? '🎴';
   if (labelEl) labelEl.textContent = t('game.turn', { name });
 }
@@ -481,6 +483,7 @@ function gameName(game) {
     'truth-or-dare': '🎲 Truth or Dare',
     'never-have-i-ever': '🙋 Never Have I Ever',
     'would-you-rather': '🤔 Would You Rather',
+    'who-is-most-likely': '🧠 Who\'s More Likely',
   };
   return names[game] ?? game;
 }

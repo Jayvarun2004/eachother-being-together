@@ -26,6 +26,10 @@
       "would-you-rather": {
         "title": "Would You Rather",
         "desc": "Make impossible choices, together"
+      },
+      "who-is-most-likely": {
+        "title": "Who's More Likely To",
+        "desc": "Test your telepathy — do you agree on who fits the card?"
       }
     },
     "btnPlayLocal": "🎮 Play on this device",

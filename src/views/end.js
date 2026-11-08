@@ -41,6 +41,12 @@ export function renderEnd() {
     const pct = total > 0 ? Math.round((matched / total) * 100) : 0;
     recapRows.push([t('end.wyrMatchPct'), `${pct}%`]);
   }
+  if (game === 'who-is-most-likely') {
+    const matched = state.get('telepathyMatches') ?? 0;
+    const total = state.get('telepathyTotal') ?? 0;
+    const pct = total > 0 ? Math.round((matched / total) * 100) : 0;
+    recapRows.push(['Telepathy Agreement', `${pct}% (${matched}/${total} agreed)`]);
+  }
 
   app.innerHTML = /* html */ `
     <div class="view active animate-slide-up" id="view-end">

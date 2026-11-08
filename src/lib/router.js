@@ -21,6 +21,7 @@ const ROUTES = {
   'game/truth-or-dare':      () => renderGame('truth-or-dare'),
   'game/never-have-i-ever':  () => renderGame('never-have-i-ever'),
   'game/would-you-rather':   () => renderGame('would-you-rather'),
+  'game/who-is-most-likely': () => renderGame('who-is-most-likely'),
   'end':                     renderEnd,
 };
 

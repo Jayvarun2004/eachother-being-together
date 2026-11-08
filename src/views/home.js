@@ -84,6 +84,7 @@ export function renderHome() {
         ${gameCard('truth-or-dare', '🎲')}
         ${gameCard('never-have-i-ever', '🙋')}
         ${gameCard('would-you-rather', '🤔')}
+        ${gameCard('who-is-most-likely', '🧠')}
       </div>
 
       <!-- Surprise us -->
@@ -161,7 +162,7 @@ export function renderHome() {
 
   // Surprise us
   document.getElementById('btn-surprise')?.addEventListener('click', () => {
-    const games = ['truth-or-dare', 'never-have-i-ever', 'would-you-rather'];
+    const games = ['truth-or-dare', 'never-have-i-ever', 'would-you-rather', 'who-is-most-likely'];
     state.set('game', games[Math.floor(Math.random() * games.length)]);
     navigate('setup');
   });
