@@ -17,6 +17,8 @@ import { sounds, speakCardText } from '../lib/sound.js';
 import { toast } from '../lib/toast.js';
 import { fireConfetti } from '../lib/confetti.js';
 import { generateAICard, modifyCardWithAI, getApiKey, setApiKey, checkOllamaAvailable } from '../lib/ai.js';
+import { vibrate } from '../lib/haptic.js';
+import { saveToVault, isVaulted, removeFromVault } from '../lib/vault.js';
 
 // --- Game module registry ---
 // Each module exports: { renderCardContent(card, el), onReveal(card, el), onDone() }
@@ -38,10 +40,14 @@ let _flipped = false;
 let _gameModule = null;
 let _game = null;
 let _level = null;
+let _cardsThisSession = 0;   // for Heat Escalator
+let _baseLevel = null;       // original level chosen at setup
 
 export async function renderGame(game) {
   _game = game;
   _level = state.get('level') ?? 'wholesome';
+  _baseLevel = _level;
+  _cardsThisSession = 0;
   const activeStake = state.get('stake') ?? 'None';
   const ModClass = GAME_MODULES[game];
 
@@ -176,6 +182,9 @@ export async function renderGame(game) {
       <button class="btn btn-ghost btn-sm w-full" id="btn-add-card" style="margin-bottom:.5rem">
         ${t('game.btnAddCard')}
       </button>
+      <button class="btn btn-ghost btn-sm w-full" id="btn-vault-save" style="margin-bottom:.25rem;display:none">
+        💌 Save to Love Vault
+      </button>
       <div class="add-card-form" id="add-card-form">
         <textarea id="custom-card-text" placeholder="${t('game.addCardPlaceholder')}" rows="3"></textarea>
         <div style="display:flex;gap:.5rem;margin-top:.5rem">
@@ -201,6 +210,23 @@ export async function renderGame(game) {
   document.getElementById('btn-done')?.addEventListener('click', handleDone);
   document.getElementById('btn-skip')?.addEventListener('click', handleSkip);
   document.getElementById('btn-veto')?.addEventListener('click', handleVeto);
+
+  // Love Vault save button
+  document.getElementById('btn-vault-save')?.addEventListener('click', () => {
+    if (!_currentCard) return;
+    const cardText = _currentCard.text || `${_currentCard.optionA} / ${_currentCard.optionB}`;
+    const btn = document.getElementById('btn-vault-save');
+    if (isVaulted(cardText)) {
+      removeFromVault(cardText);
+      if (btn) btn.textContent = '💌 Save to Love Vault';
+      toast('Removed from Love Vault', 'info');
+    } else {
+      saveToVault({ text: cardText, game: _game, level: _level });
+      if (btn) btn.textContent = '💖 Saved to Vault!';
+      vibrate('success');
+      toast('💌 Saved to Love Vault!', 'success');
+    }
+  });
 
   // Add card form
   document.getElementById('btn-add-card')?.addEventListener('click', () => {
@@ -316,6 +342,10 @@ async function loadNextCard() {
   // Hide actions until card is flipped
   document.getElementById('card-actions').style.display = 'none';
 
+  // Hide vault button until flipped
+  const vaultBtn = document.getElementById('btn-vault-save');
+  if (vaultBtn) vaultBtn.style.display = 'none';
+
   // Update front face with game icon
   updateFrontFace();
 
@@ -341,6 +371,7 @@ async function handleFlip() {
 
   _flipped = true;
   sounds.flip();
+  vibrate('flip');
 
   document.getElementById('flip-card')?.classList.add('flipped');
 
@@ -348,6 +379,14 @@ async function handleFlip() {
   if (_game === 'truth-or-dare') {
     document.getElementById('card-actions').style.display = 'flex';
     updateActionCounts();
+  }
+
+  // Show Vault save button
+  const vaultBtn = document.getElementById('btn-vault-save');
+  if (vaultBtn) {
+    vaultBtn.style.display = 'block';
+    const cardText = _currentCard.text || `${_currentCard.optionA} / ${_currentCard.optionB}`;
+    vaultBtn.textContent = isVaulted(cardText) ? '💖 Saved to Vault!' : '💌 Save to Love Vault';
   }
 
   // Let game module handle reveal
@@ -363,13 +402,19 @@ async function handleFlip() {
 async function handleDone() {
   if (!_flipped) return;
   sounds.done();
+  vibrate('success');
 
   // Add score for current player
   const turn = state.get('currentTurn');
   const scores = [...(state.get('scores') ?? [0, 0])];
   scores[turn] = (scores[turn] ?? 0) + 1;
   state.set('scores', scores);
+
+  _cardsThisSession++;
   state.set('cardsPlayed', (state.get('cardsPlayed') ?? 0) + 1);
+
+  // Heat Escalator — escalate every 5 cards in Spicy base level
+  checkHeatEscalator();
 
   // Milestone confetti every 5 points
   if (scores[turn] % 5 === 0) fireConfetti();
@@ -392,6 +437,7 @@ async function handleSkip() {
   }
 
   sounds.skip();
+  vibrate('skip');
   skipsLeft[turn]--;
   state.set('skipsLeft', skipsLeft);
 
@@ -414,6 +460,7 @@ async function handleVeto() {
   }
 
   sounds.veto();
+  vibrate('veto');
   vetosLeft[turn]--;
   state.set('vetosLeft', vetosLeft);
 
@@ -430,6 +477,22 @@ async function handleVeto() {
 function switchTurn() {
   const turn = state.get('currentTurn');
   state.set('currentTurn', turn === 0 ? 1 : 0);
+}
+
+/** Heat Escalator — in Spicy mode, escalate level every 5 cards */
+function checkHeatEscalator() {
+  if (_baseLevel !== 'spicy') return; // only escalates from spicy base
+  const levels = ['wholesome', 'flirty', 'spicy'];
+  const milestones = [5, 10, 15]; // escalate at these card counts
+  if (milestones.includes(_cardsThisSession)) {
+    const idx = milestones.indexOf(_cardsThisSession);
+    const nextLevel = levels[Math.min(idx + 1, levels.length - 1)];
+    if (nextLevel !== _level) {
+      _level = nextLevel;
+      const labels = { wholesome: '🌸 Wholesome', flirty: '💋 Flirty', spicy: '🔥 Spicy' };
+      toast(`🌶️ Heat escalating to ${labels[nextLevel]}!`, 'info', 2500);
+    }
+  }
 }
 
 function updatePlayerBar() {

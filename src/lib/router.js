@@ -2,9 +2,7 @@
  * src/lib/router.js
  * Hash-based client-side router.
  * Routes: #home, #setup, #room, #game/truth-or-dare, #game/never-have-i-ever,
- *         #game/would-you-rather, #end
- *
- * To add a new game: register its view here and in /games/<name>/index.js
+ *         #game/would-you-rather, #game/who-is-most-likely, #vault, #end
  */
 
 import { renderHome } from '../views/home.js';
@@ -12,6 +10,7 @@ import { renderSetup } from '../views/setup.js';
 import { renderRoom } from '../views/room.js';
 import { renderGame } from '../views/game.js';
 import { renderEnd } from '../views/end.js';
+import { renderVault } from '../views/vault.js';
 
 const ROUTES = {
   '':                        renderHome,
@@ -22,6 +21,7 @@ const ROUTES = {
   'game/never-have-i-ever':  () => renderGame('never-have-i-ever'),
   'game/would-you-rather':   () => renderGame('would-you-rather'),
   'game/who-is-most-likely': () => renderGame('who-is-most-likely'),
+  'vault':                   renderVault,
   'end':                     renderEnd,
 };
 

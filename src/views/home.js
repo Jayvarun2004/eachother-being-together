@@ -9,6 +9,7 @@ import { navigate } from '../lib/router.js';
 import { cycleTheme, getCurrentThemeObj } from '../lib/theme.js';
 import { toggleAmbientSound } from '../lib/sound.js';
 import { toast } from '../lib/toast.js';
+import { getVault } from '../lib/vault.js';
 
 export function renderHome() {
   const app = document.getElementById('app');
@@ -18,6 +19,8 @@ export function renderHome() {
   const p1 = state.get('player1') ?? 'Player 1';
   const p2 = state.get('player2') ?? 'Player 2';
   const curTheme = getCurrentThemeObj();
+  const vaultCount = getVault().length;
+  const hasNamesSet = p1 !== 'Player 1' || p2 !== 'Player 2';
 
   const vibeLabels = {
     romantic: '🌹 Romance',
@@ -41,6 +44,9 @@ export function renderHome() {
           <span>Eachother</span>
         </a>
         <div class="header-actions">
+          <button class="btn-icon" id="btn-vault" aria-label="Love Vault" title="Love Vault">
+            💌${vaultCount > 0 ? `<span class="vault-count-badge">${vaultCount}</span>` : ''}
+          </button>
           <button class="btn-icon" id="btn-ambient" aria-label="Toggle ambient rain" title="Ambient Rain Sound">
             🌧️
           </button>
@@ -140,9 +146,14 @@ export function renderHome() {
             🎮 Play On This Device
           </button>
           <button class="btn btn-secondary" id="btn-play-online">
-            📡 Play Online (2 Devices)
+            📡 Play With Friend
           </button>
         </div>
+        ${hasNamesSet && state.get('game') ? `
+          <button class="btn btn-ghost w-full" id="btn-fast-launch" style="font-size: var(--text-sm); border: 1.5px solid var(--accent); color: var(--accent);">
+            ⚡ Fast Play (${p1} & ${p2}) →
+          </button>
+        ` : ''}
       </div>
 
       <footer class="app-footer">${t('app.footer')}</footer>
@@ -150,6 +161,9 @@ export function renderHome() {
   `;
 
   // --- Wire Interactivity ---
+
+  // Vault
+  document.getElementById('btn-vault')?.addEventListener('click', () => navigate('vault'));
 
   // Edit Names Drawer Toggle
   document.getElementById('btn-toggle-edit-names')?.addEventListener('click', () => {
@@ -236,7 +250,7 @@ export function renderHome() {
     navigate('setup');
   });
 
-  // Play Online
+  // Play Online / With Friend
   document.getElementById('btn-play-online')?.addEventListener('click', () => {
     if (!state.get('game')) {
       toast('Pick a game card above first! 👆', 'warning');
@@ -244,6 +258,18 @@ export function renderHome() {
     }
     state.set('mode', 'online');
     navigate('room');
+  });
+
+  // Fast launch — skip setup if names already saved
+  document.getElementById('btn-fast-launch')?.addEventListener('click', () => {
+    state.set('mode', 'local');
+    state.patch({
+      currentTurn: 0, scores: [0, 0],
+      skipsLeft: [3, 3], vetosLeft: [1, 1],
+      cardsPlayed: 0, skipsUsed: [0, 0], vetosUsed: [0, 0],
+      nhieCommonCount: 0, wyrMatchCount: 0, wyrTotalCount: 0,
+    });
+    navigate(`game/${state.get('game')}`);
   });
 }
 

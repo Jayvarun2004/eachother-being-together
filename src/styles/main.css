@@ -1750,3 +1750,125 @@ a:hover {
   font-weight: 600;
 }
 
+/* ============================================================
+   Love Vault
+   ============================================================ */
+.vault-count-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--color-rose);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+.btn-icon {
+  position: relative;
+}
+
+.vault-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: var(--space-6);
+}
+
+.vault-card {
+  padding: 1rem;
+  border-radius: 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+}
+
+.vault-card-meta {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.vault-game-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: rgba(196, 85, 106, 0.12);
+  color: var(--color-rose);
+  letter-spacing: 0.03em;
+}
+
+.vault-level-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-glass);
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.vault-card-text {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  line-height: 1.55;
+  margin: 0 0 0.6rem;
+}
+
+.vault-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.vault-remove-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.vault-remove-btn:hover {
+  color: var(--color-rose);
+  background: rgba(196, 85, 106, 0.08);
+}
+
+/* ============================================================
+   Online Room — Friend Play Enhancements
+   ============================================================ */
+.room-share-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--bg-surface);
+  border-radius: 14px;
+  border: 1px dashed var(--border);
+  margin-top: 0.75rem;
+}
+
+.room-code-display {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  font-family: var(--font-display);
+  color: var(--accent);
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+

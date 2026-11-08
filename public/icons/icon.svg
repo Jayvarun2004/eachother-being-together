@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Eachother Being Together icon">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#0d0a12"/>
+
+  <!-- Heart shape centred in the circle -->
+  <!-- Two overlapping circles form the top lobes; a triangle the bottom point -->
+  <path
+    d="
+      M256 370
+      C256 370 120 280 120 190
+      C120 148 152 118 192 118
+      C216 118 236 130 256 150
+      C276 130 296 118 320 118
+      C360 118 392 148 392 190
+      C392 280 256 370 256 370
+      Z
+    "
+    fill="#c4556a"
+  />
+
+  <!-- Second, slightly smaller heart layered on top for depth -->
+  <path
+    d="
+      M256 348
+      C256 348 136 265 136 192
+      C136 156 163 130 198 130
+      C220 130 239 141 256 159
+      C273 141 292 130 314 130
+      C349 130 376 156 376 192
+      C376 265 256 348 256 348
+      Z
+    "
+    fill="#e8738a"
+  />
+
+  <!-- Small sparkle dot top-left of heart for the 💕 double-heart feel -->
+  <circle cx="310" cy="148" r="20" fill="#f5a0b2" opacity="0.75"/>
+  <path
+    d="
+      M310 136
+      C310 136 290 148 290 162
+      C290 172 299 180 310 180
+      C321 180 330 172 330 162
+      C330 148 310 136 310 136
+      Z
+    "
+    fill="#f5a0b2"
+    opacity="0.9"
+  />
+</svg>
