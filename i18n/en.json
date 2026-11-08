@@ -44,6 +44,23 @@
     "player2Default": "Player 2",
     "btnStart": "Start Playing 💕"
   },
+  "stakes": {
+    "title": "Tonight's Stakes & Reward 🎯",
+    "subtitle": "What does the winner win from the loser tonight?",
+    "none": "No stakes, just fun",
+    "preset1": "💆 15-Min Massage",
+    "preset2": "🥞 Breakfast in Bed",
+    "preset3": "🎬 Movie & Snack Choice",
+    "preset4": "☕ Coffee & Pastry Run",
+    "preset5": "💋 10 Gentle Kisses",
+    "preset6": "🪄 1 Free Wish / Favor",
+    "custom": "✍️ Custom…",
+    "customPlaceholder": "E.g. Loser does the dishes & foot rub",
+    "badgeLabel": "Stake",
+    "certificateTitle": "Official Cupid Decree 📜",
+    "winnerDecree": "{winner} takes the crown! 👑 {loser} must fulfill: \"{stake}\" tonight 💕",
+    "tieDecree": "A tied romance! Both {p1} and {p2} owe each other: \"{stake}\" 💕"
+  },
   "ageGate": {
     "title": "🔥 Spicy level needs your consent",
     "p1Check": "I ({name}) confirm I'm 18 or older",

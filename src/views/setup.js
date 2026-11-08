@@ -1,6 +1,6 @@
 /**
  * src/views/setup.js
- * Player name input + age gate for Spicy level.
+ * Player name input + age gate for Spicy level + Stakes & Rewards selector.
  * Saves to state and navigates to the game.
  */
 
@@ -15,8 +15,29 @@ export function renderSetup() {
   const level = state.get('level') ?? 'wholesome';
   const p1 = state.get('player1') ?? 'Player 1';
   const p2 = state.get('player2') ?? 'Player 2';
+  let currentStake = state.get('stake') ?? 'None';
 
-  const gameEmojis = { 'truth-or-dare': '🎲', 'never-have-i-ever': '🙋', 'would-you-rather': '🤔' };
+  const gameEmojis = {
+    'truth-or-dare': '🎲',
+    'never-have-i-ever': '🙋',
+    'would-you-rather': '🤔',
+    'who-is-most-likely': '🔮'
+  };
+
+  const presets = [
+    { value: 'None', label: t('stakes.none') },
+    { value: '15-Min Massage 💆', label: t('stakes.preset1') },
+    { value: 'Breakfast in Bed 🥞', label: t('stakes.preset2') },
+    { value: 'Movie & Snack Choice 🎬', label: t('stakes.preset3') },
+    { value: 'Coffee & Pastry Run ☕', label: t('stakes.preset4') },
+    { value: '10 Gentle Kisses 💋', label: t('stakes.preset5') },
+    { value: '1 Free Wish 🪄', label: t('stakes.preset6') },
+    { value: '__custom__', label: t('stakes.custom') },
+  ];
+
+  const isPresetValue = presets.some(p => p.value !== '__custom__' && p.value === currentStake);
+  const isCustom = !isPresetValue && currentStake !== 'None';
+  let activePillValue = isCustom ? '__custom__' : currentStake;
 
   app.innerHTML = /* html */ `
     <div class="view active animate-slide-up" id="view-setup">
@@ -40,6 +61,34 @@ export function renderSetup() {
           <input id="setup-p2" type="text" value="${escHtml(p2)}"
             placeholder="${t('players.player2Default')}" maxlength="20" autocomplete="off" />
           <span class="player-emoji" aria-hidden="true">💙</span>
+        </div>
+      </div>
+
+      <!-- Couples Stakes & Rewards Engine -->
+      <div class="stakes-section mt-4 glass-card" style="padding: 1rem; border-radius: 16px;">
+        <div class="stakes-header" style="margin-bottom: 0.75rem;">
+          <div style="font-weight: 600; font-size: var(--text-sm); color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+            <span>${t('stakes.title')}</span>
+          </div>
+          <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px;">
+            ${t('stakes.subtitle')}
+          </div>
+        </div>
+
+        <div class="stakes-pill-grid" id="stakes-pill-grid">
+          ${presets.map(p => `
+            <button type="button" class="stakes-pill ${activePillValue === p.value ? 'active' : ''}" data-stake="${p.value}">
+              ${p.label}
+            </button>
+          `).join('')}
+        </div>
+
+        <div class="custom-stake-wrap ${isCustom ? 'visible' : ''}" id="custom-stake-wrap" style="margin-top: 0.75rem; display: ${isCustom ? 'block' : 'none'};">
+          <input type="text" id="custom-stake-input" maxlength="60"
+            class="input-field"
+            style="width: 100%; padding: 0.6rem 0.85rem; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-primary); font-size: var(--text-sm);"
+            placeholder="${t('stakes.customPlaceholder')}"
+            value="${isCustom ? escHtml(currentStake) : ''}" />
         </div>
       </div>
 
@@ -83,6 +132,35 @@ export function renderSetup() {
   document.getElementById('setup-p2')?.addEventListener('input', e => {
     state.set('player2', e.target.value || 'Player 2');
     updateAgeLabels();
+  });
+
+  // Stake selection
+  const pillGrid = document.getElementById('stakes-pill-grid');
+  const customWrap = document.getElementById('custom-stake-wrap');
+  const customInput = document.getElementById('custom-stake-input');
+
+  pillGrid?.addEventListener('click', (e) => {
+    const pill = e.target.closest('.stakes-pill');
+    if (!pill) return;
+
+    pillGrid.querySelectorAll('.stakes-pill').forEach(btn => btn.classList.remove('active'));
+    pill.classList.add('active');
+
+    const val = pill.dataset.stake;
+    if (val === '__custom__') {
+      customWrap.style.display = 'block';
+      customInput.focus();
+      const customVal = customInput.value.trim();
+      state.set('stake', customVal || 'Custom romantic favor');
+    } else {
+      customWrap.style.display = 'none';
+      state.set('stake', val);
+    }
+  });
+
+  customInput?.addEventListener('input', (e) => {
+    const text = e.target.value.trim();
+    state.set('stake', text || 'Custom romantic favor');
   });
 
   // Start game

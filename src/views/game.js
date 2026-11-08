@@ -42,6 +42,7 @@ let _level = null;
 export async function renderGame(game) {
   _game = game;
   _level = state.get('level') ?? 'wholesome';
+  const activeStake = state.get('stake') ?? 'None';
   const ModClass = GAME_MODULES[game];
 
   if (!ModClass) {
@@ -88,6 +89,14 @@ export async function renderGame(game) {
           <div class="deck-progress-fill" id="deck-progress-fill" style="width:0%"></div>
         </div>
       </div>
+
+      <!-- Active Stake Banner -->
+      ${activeStake && activeStake !== 'None' ? `
+        <div class="active-stake-banner" id="active-stake-banner" title="Tonight's Stakes">
+          <span class="stake-badge-icon">🎯</span>
+          <span class="stake-badge-text"><strong>${t('stakes.badgeLabel')}:</strong> ${escHtml(activeStake)}</span>
+        </div>
+      ` : ''}
 
       <!-- The flip card -->
       <div class="card-area">

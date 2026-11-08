@@ -44,6 +44,9 @@ const defaults = {
 
   // Spicy age gate
   spicyConfirmed: [false, false],
+
+  // Stakes & Rewards Engine
+  stake: 'None',
 };
 
 function loadFromStorage() {
@@ -93,6 +96,7 @@ export const state = {
           level: _state.level,
           theme: _state.theme,
           sound: _state.sound,
+          stake: _state.stake,
         }
       : {};
     _state = { ...defaults, ...settings };
