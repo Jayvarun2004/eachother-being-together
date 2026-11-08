@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A fun, romantic game room for couples. Play Truth or Dare, Never Have I Ever, and Would You Rather together." />
+    <meta name="theme-color" content="#c4556a" />
+    <title>Eachother Being Together 💕</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <!-- App shell: all views are rendered here by JavaScript -->
+    <div id="app">
+      <div class="splash-screen" aria-live="polite">
+        <div class="splash-logo">💕</div>
+        <p class="splash-text">Loading your love language…</p>
+      </div>
+    </div>
+
+    <!-- Sound toggle (always visible) -->
+    <button
+      id="sound-toggle"
+      class="sound-btn"
+      aria-label="Toggle sound"
+      title="Toggle sound"
+    >🔊</button>
+
+    <!-- Toast notification container -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Confetti canvas (injected by confetti.js) -->
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

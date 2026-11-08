@@ -1,0 +1,29 @@
+{
+  "name": "eachother-being-together",
+  "version": "1.0.0",
+  "description": "A fun, romantic game room for couples — Truth or Dare, Never Have I Ever, Would You Rather",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js",
+    "format": "prettier --write \"src/**/*.{js,css,html}\" \"*.json\"",
+    "validate-cards": "node scripts/validate-cards.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "vite": "^5.2.0"
+  },
+  "keywords": [
+    "couples",
+    "game",
+    "truth-or-dare",
+    "never-have-i-ever",
+    "would-you-rather",
+    "relationship",
+    "open-source"
+  ],
+  "license": "MIT"
+}

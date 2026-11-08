@@ -1,0 +1,121 @@
+{
+  "app": {
+    "name": "Eachother Being Together",
+    "tagline": "A love language for two 💕",
+    "footer": "For consenting adult couples. Skip anything you don't like."
+  },
+  "home": {
+    "title": "Eachother Being Together",
+    "subtitle": "A love language for two 💕",
+    "player1Placeholder": "Player 1 name",
+    "player2Placeholder": "Player 2 name",
+    "levels": {
+      "wholesome": "🌸 Wholesome",
+      "flirty": "💋 Flirty",
+      "spicy": "🔥 Spicy"
+    },
+    "games": {
+      "truth-or-dare": {
+        "title": "Truth or Dare",
+        "desc": "Confess your secrets or accept a daring challenge"
+      },
+      "never-have-i-ever": {
+        "title": "Never Have I Ever",
+        "desc": "Discover what you've both been up to"
+      },
+      "would-you-rather": {
+        "title": "Would You Rather",
+        "desc": "Make impossible choices, together"
+      }
+    },
+    "btnPlayLocal": "🎮 Play on this device",
+    "btnPlayOnline": "📡 Play online (two devices)",
+    "btnSurprise": "✨ Surprise us!"
+  },
+  "players": {
+    "title": "Who's Playing?",
+    "player1Label": "💗 Player 1 (goes first)",
+    "player2Label": "💙 Player 2",
+    "player1Default": "Player 1",
+    "player2Default": "Player 2",
+    "btnStart": "Start Playing 💕"
+  },
+  "ageGate": {
+    "title": "🔥 Spicy level needs your consent",
+    "p1Check": "I ({name}) confirm I'm 18 or older",
+    "p2Check": "I ({name}) confirm I'm 18 or older",
+    "warning": "Spicy cards are suggestive but never explicit, coercive, or degrading. Skip anything that makes you uncomfortable."
+  },
+  "room": {
+    "createTitle": "Your Room Code",
+    "hint": "Share this code (or link) with your partner",
+    "btnCopyLink": "📋 Copy invite link",
+    "joinTitle": "Join a Room",
+    "joinPlaceholder": "Enter room code",
+    "btnJoin": "Join",
+    "btnCreate": "Create Room",
+    "waiting": "Waiting for your partner…",
+    "partnerJoined": "{name} joined! 🎉",
+    "partnerDisconnected": "Partner disconnected…",
+    "partnerBack": "Partner is back! 💕",
+    "fullRoom": "This room is full (max 2 players).",
+    "expired": "This room has expired. Please create a new one."
+  },
+  "game": {
+    "turn": "{name}'s turn",
+    "tap": "Tap to reveal",
+    "truth": "Truth",
+    "dare": "Dare",
+    "btnDone": "✅ Done! (+1)",
+    "btnSkip": "Skip ({n} left)",
+    "btnVeto": "🛑 Veto ({n} left)",
+    "btnNext": "Next Card →",
+    "timerLabel": "{n}s",
+    "skipOut": "No skips left!",
+    "vetoOut": "No vetoes left!",
+    "deckDone": "Deck finished! Shuffling…",
+    "customCardAdded": "Your card added!",
+    "btnAddCard": "➕ Add your own card",
+    "addCardPlaceholder": "Write your card text here…",
+    "btnSaveCard": "Save Card",
+    "btnCancelCard": "Cancel"
+  },
+  "nhie": {
+    "question": "Have you ever…",
+    "btnYes": "I have 🙋",
+    "btnNo": "Never! 🙅",
+    "waitingPartner": "Waiting for {name}…",
+    "btnReveal": "Reveal Together! 💕",
+    "matched": "You both {verb}!",
+    "differed": "Interesting…",
+    "common": "Things in common this round: {n}",
+    "btnTellStory": "📖 Tell me the story!"
+  },
+  "wyr": {
+    "pick": "Pick one (secretly):",
+    "orDivider": "— OR —",
+    "waitingPartner": "Waiting for {name}…",
+    "btnReveal": "Reveal! 💕",
+    "matched": "You chose the same! 💞",
+    "differed": "Opposite picks — explain yourselves! 😄",
+    "matchPct": "{n}% match so far",
+    "btnExplain": "💬 Explain yourself"
+  },
+  "end": {
+    "title": "That was fun! 🎉",
+    "player1Score": "{name}'s score",
+    "player2Score": "{name}'s score",
+    "cardsPlayed": "Cards played",
+    "skipsUsed": "Skips used",
+    "vetosUsed": "Vetoes used",
+    "commonThings": "Things in common (NHIE)",
+    "wyrMatchPct": "Match percentage (WYR)",
+    "btnPlayAgain": "🔁 Play Again",
+    "btnHome": "🏠 Back to Home"
+  },
+  "errors": {
+    "supabaseNotConfigured": "Online mode is not configured. Set up Supabase in .env to play online.",
+    "roomNotFound": "Room not found. Check the code and try again.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

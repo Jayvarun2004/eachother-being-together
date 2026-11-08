@@ -1,0 +1,177 @@
+[
+  {
+    "id": "wyr-s-001",
+    "optionA": "spend a weekend in Paris just the two of you",
+    "optionB": "spend a month backpacking through Southeast Asia together",
+    "level": "spicy",
+    "tags": ["travel", "romance"]
+  },
+  {
+    "id": "wyr-s-002",
+    "optionA": "have your partner look at you the way they did at the start",
+    "optionB": "have your partner understand you the way they do now",
+    "level": "spicy",
+    "tags": ["connection"]
+  },
+  {
+    "id": "wyr-s-003",
+    "optionA": "always have the perfect romantic ambience",
+    "optionB": "always be in the perfect mood for romance",
+    "level": "spicy",
+    "tags": ["romance", "mood"]
+  },
+  {
+    "id": "wyr-s-004",
+    "optionA": "be irresistible to your partner physically",
+    "optionB": "be irresistible to your partner mentally",
+    "level": "spicy",
+    "tags": ["attraction"]
+  },
+  {
+    "id": "wyr-s-005",
+    "optionA": "have your partner desire you intensely every single day",
+    "optionB": "have your partner seek your emotional comfort whenever stressed",
+    "level": "spicy",
+    "tags": ["passion", "intimacy"]
+  },
+  {
+    "id": "wyr-s-006",
+    "optionA": "know exactly what your partner finds most attractive about you",
+    "optionB": "know exactly what they find most endearing about you",
+    "level": "spicy",
+    "tags": ["attraction"]
+  },
+  {
+    "id": "wyr-s-007",
+    "optionA": "have your partner write about you in their private journal",
+    "optionB": "be the last thought in their mind before falling asleep",
+    "level": "spicy",
+    "tags": ["affection"]
+  },
+  {
+    "id": "wyr-s-008",
+    "optionA": "be the reason your partner smiles randomly throughout the day",
+    "optionB": "be the first person they call when something amazing happens",
+    "level": "spicy",
+    "tags": ["happiness"]
+  },
+  {
+    "id": "wyr-s-009",
+    "optionA": "have an entire romantic day planned completely for you",
+    "optionB": "plan an unforgettable secret day for your partner",
+    "level": "spicy",
+    "tags": ["dates"]
+  },
+  {
+    "id": "wyr-s-010",
+    "optionA": "revisit your most passionate evening together so far",
+    "optionB": "fast-forward to the most romantic adventure you haven't had yet",
+    "level": "spicy",
+    "tags": ["memories"]
+  },
+  {
+    "id": "wyr-s-011",
+    "optionA": "have your partner be completely in awe of your talents",
+    "optionB": "be completely mesmerized watching your partner in their element",
+    "level": "spicy",
+    "tags": ["admiration"]
+  },
+  {
+    "id": "wyr-s-012",
+    "optionA": "have magnetic chemistry that never dims with time",
+    "optionB": "have a soothing comfort that deepens every single year",
+    "level": "spicy",
+    "tags": ["chemistry", "bond"]
+  },
+  {
+    "id": "wyr-s-013",
+    "optionA": "know you are the person your partner proudly brags about",
+    "optionB": "know you are the person they are most vulnerable and honest with",
+    "level": "spicy",
+    "tags": ["trust", "vulnerability"]
+  },
+  {
+    "id": "wyr-s-014",
+    "optionA": "have a thrilling romance filled with unexpected surprises",
+    "optionB": "have a deeply peaceful connection where you always feel at home",
+    "level": "spicy",
+    "tags": ["lifestyle"]
+  },
+  {
+    "id": "wyr-s-015",
+    "optionA": "have your partner write your name somewhere permanent",
+    "optionB": "hear them whisper your name when they feel safe and happy",
+    "level": "spicy",
+    "tags": ["devotion"]
+  },
+  {
+    "id": "wyr-s-016",
+    "optionA": "be someone your partner fell for slowly over months",
+    "optionB": "be someone they fell for all at once from the very start",
+    "level": "spicy",
+    "tags": ["love-story"]
+  },
+  {
+    "id": "wyr-s-017",
+    "optionA": "have a secret code or touch that only the two of you understand",
+    "optionB": "have a special song that brings back instant romantic sparks",
+    "level": "spicy",
+    "tags": ["secrets", "signals"]
+  },
+  {
+    "id": "wyr-s-018",
+    "optionA": "spend a cozy night talking under candlelight until dawn",
+    "optionB": "spend an intimate night where no words are spoken at all",
+    "level": "spicy",
+    "tags": ["closeness"]
+  },
+  {
+    "id": "wyr-s-019",
+    "optionA": "know every compliment anyone ever gave your partner",
+    "optionB": "know the exact reason why your partner chose you above all",
+    "level": "spicy",
+    "tags": ["curiosity"]
+  },
+  {
+    "id": "wyr-s-020",
+    "optionA": "be that inspiring couple that turns heads everywhere",
+    "optionB": "have a private romance that only you two truly appreciate",
+    "level": "spicy",
+    "tags": ["dynamic"]
+  },
+  {
+    "id": "wyr-s-021",
+    "optionA": "have your partner be captivated by your intelligence",
+    "optionB": "have your partner be captivated by your warmth and kindness",
+    "level": "spicy",
+    "tags": ["attraction"]
+  },
+  {
+    "id": "wyr-s-022",
+    "optionA": "receive an unexpected passionate confession when you least expect it",
+    "optionB": "give a heartfelt confession and watch your partner melt",
+    "level": "spicy",
+    "tags": ["confession"]
+  },
+  {
+    "id": "wyr-s-023",
+    "optionA": "be adored in quiet, private gestures behind closed doors",
+    "optionB": "be lovingly celebrated in front of family and friends",
+    "level": "spicy",
+    "tags": ["affection"]
+  },
+  {
+    "id": "wyr-s-024",
+    "optionA": "relive your most magical holiday or vacation together",
+    "optionB": "take off tomorrow on a spontaneous romantic getaway without bags",
+    "level": "spicy",
+    "tags": ["travel", "adventure"]
+  },
+  {
+    "id": "wyr-s-025",
+    "optionA": "know your partner cherishes your brightest, happiest moments",
+    "optionB": "know your partner loves you unconditionally through tough days",
+    "level": "spicy",
+    "tags": ["unconditional-love"]
+  }
+]
