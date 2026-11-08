@@ -2,12 +2,13 @@
  * src/lib/ai.js
  * AI Assistant for "Eachother Being Together"
  *
- * Powers dynamic, personalized question generation and live card re-writing
- * using the Google Gemini API (with smart fallback templates when offline/no key).
+ * Integrated with a 100% FREE, zero-signup, zero-key public AI endpoint (Pollinations AI)
+ * with optional Gemini API support and offline fallback.
  */
 
 import { state } from './state.js';
 
+const POLLINATIONS_URL = 'https://text.pollinations.ai/';
 const GEMINI_MODEL = 'gemini-1.5-flash';
 
 /**
@@ -23,7 +24,7 @@ export function getApiKey() {
 }
 
 /**
- * Save user API key
+ * Save user API key (optional)
  */
 export function setApiKey(key) {
   const cleanKey = key.trim();
@@ -40,79 +41,98 @@ export function setApiKey(key) {
 }
 
 /**
- * Generate a personalized card based on couple's preferences
+ * Generate a personalized card based on couple's preferences.
+ * Uses free public AI by default — works immediately without any key!
  */
 export async function generateAICard({ game, level, vibe = 'romantic', customNote = '' }) {
   const p1 = state.get('player1') || 'Partner 1';
   const p2 = state.get('player2') || 'Partner 2';
-  const key = getApiKey();
+  const customKey = getApiKey();
 
-  if (!key) {
-    // Return curated spicy/deep generative fallback if no API key is provided
-    return getLocalCuratedCard(game, level, vibe);
-  }
-
-  const systemPrompt = `You are Cupid AI, a romantic, witty, and emotionally intelligent couples game assistant for a web app named "Eachother Being Together".
+  const systemInstructions = `You are Cupid AI, a romantic, witty, and emotionally intelligent couples game assistant for a web app named "Eachother Being Together".
 Players: "${p1}" and "${p2}".
-Game type: "${game}" (choices: "truth-or-dare", "never-have-i-ever", "would-you-rather").
-Desired Level: "${level}" (wholesome, flirty, or spicy).
-Desired Vibe: "${vibe}" (e.g. passionate, funny, deep, adventurous, provocative, playful).
-User custom guidance: "${customNote}".
+Game: "${game}" ("truth-or-dare", "never-have-i-ever", "would-you-rather").
+Level: "${level}" (wholesome, flirty, or spicy).
+Vibe: "${vibe}" (passionate, funny, deep, adventurous, provocative, playful).
+User custom prompt: "${customNote}".
 
-CRITICAL GUIDELINES:
-- Make questions engaging, surprising, intimate, and authentic to adult couples. Avoid boring clichés.
-- For "truth-or-dare", decide whether it's a Truth or Dare. Dares must be creative, fun, and safe.
-- For "never-have-i-ever", produce a compelling "I have never..." statement that sparks stories.
-- For "would-you-rather", provide two distinct, intriguing dilemmas (optionA and optionB).
-- Spicy questions should be passionate, suggestive, and exciting, while strictly staying safe, consensual, non-degrading, and non-explicit.
+CRITICAL INSTRUCTIONS:
+- Tailor the question specifically for adult couples. Avoid boring or generic clichés.
+- For "truth-or-dare": choose either a Truth or Dare. Dares must be creative, fun, safe to do at home.
+- For "never-have-i-ever": output a spicy, fun, or deep "I have never..." statement.
+- For "would-you-rather": provide two distinct, intriguing options ("optionA" and "optionB").
+- Spicy cards must be passionate, suggestive, and thrilling, but always consensual, respectful, safe, and not graphically explicit.
 
-Return ONLY a valid JSON object matching one of these schemas without any markdown or backticks:
+Respond ONLY with a valid JSON object (no markdown, no backticks, no markdown codeblocks):
 
 If truth-or-dare:
-{"type": "truth"|"dare", "text": "card text here", "timerSeconds": null or number}
+{"type": "truth"|"dare", "text": "...", "timerSeconds": null or number}
 
 If never-have-i-ever:
-{"text": "never-have-i-ever statement here"}
+{"text": "..."}
 
 If would-you-rather:
-{"optionA": "first choice", "optionB": "second choice"}`;
+{"optionA": "...", "optionB": "..."}`;
 
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: systemPrompt }] }],
-          generationConfig: {
-            temperature: 0.95,
-            topP: 0.9,
-            responseMimeType: 'application/json',
-          },
-        }),
+  // 1. If user supplied a Gemini key, use Gemini
+  if (customKey) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${customKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: systemInstructions }] }],
+            generationConfig: {
+              temperature: 0.95,
+              responseMimeType: 'application/json',
+            },
+          }),
+        }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const parsed = cleanAndParseJSON(raw);
+        if (parsed) {
+          return { id: `ai_${Date.now()}`, level, tags: ['gemini', vibe], ...parsed };
+        }
       }
-    );
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || `HTTP error ${res.status}`);
+    } catch (e) {
+      console.warn('Gemini error, falling back to free open AI:', e);
     }
-
-    const data = await res.json();
-    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    const parsed = JSON.parse(rawText);
-
-    return {
-      id: `ai_${Date.now()}`,
-      level,
-      tags: ['ai-generated', vibe],
-      ...parsed,
-    };
-  } catch (err) {
-    console.warn('Gemini API call failed, using creative fallback:', err);
-    return getLocalCuratedCard(game, level, vibe);
   }
+
+  // 2. Free Open AI Endpoint (Zero signup, zero key, instant response)
+  try {
+    const res = await fetch(POLLINATIONS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [
+          { role: 'system', content: systemInstructions },
+          { role: 'user', content: 'Generate one fresh couple card now in raw JSON.' },
+        ],
+        jsonMode: true,
+        model: 'openai',
+      }),
+    });
+
+    if (res.ok) {
+      const rawText = await res.text();
+      const parsed = cleanAndParseJSON(rawText);
+      if (parsed) {
+        return { id: `ai_free_${Date.now()}`, level, tags: ['free-ai', vibe], ...parsed };
+      }
+    }
+  } catch (err) {
+    console.warn('Free AI endpoint error, using curated template:', err);
+  }
+
+  // 3. Instant local fallback
+  return getLocalCuratedCard(game, level, vibe);
 }
 
 /**
@@ -121,51 +141,90 @@ If would-you-rather:
 export async function modifyCardWithAI(card, direction = 'spicier') {
   const p1 = state.get('player1') || 'Partner 1';
   const p2 = state.get('player2') || 'Partner 2';
-  const key = getApiKey();
+  const customKey = getApiKey();
 
-  if (!key) {
-    return getModifiedFallback(card, direction);
+  const prompt = `Rewrite this couple's game card to make it **${direction.toUpperCase()}** (more exciting, intimate, raw, and fun) for ${p1} and ${p2}.
+Original card: ${JSON.stringify(card)}
+Return ONLY a valid JSON object matching the exact original structure (fields: text, or optionA & optionB, and type if present). No markdown fences.`;
+
+  // Try custom key if present
+  if (customKey) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${customKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: 'application/json' },
+          }),
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const parsed = cleanAndParseJSON(raw);
+        if (parsed) {
+          return { ...card, ...parsed, id: `ai_mod_${Date.now()}` };
+        }
+      }
+    } catch {
+      /* fallback */
+    }
   }
 
-  const prompt = `You are a couples game assistant. Rewrite the following card to make it **${direction.toUpperCase()}** for couple ${p1} and ${p2}.
-Original card: ${JSON.stringify(card)}
-Return ONLY a valid JSON object with the exact same structure as the original card (e.g. keeping "text" or "optionA"/"optionB", "type" if present).
-No markdown, no fences.`;
-
+  // Free AI Endpoint
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            temperature: 0.9,
-            responseMimeType: 'application/json',
-          },
-        }),
+    const res = await fetch(POLLINATIONS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [
+          { role: 'system', content: 'You are a couples card game modifier. Return raw JSON only.' },
+          { role: 'user', content: prompt },
+        ],
+        jsonMode: true,
+        model: 'openai',
+      }),
+    });
+
+    if (res.ok) {
+      const rawText = await res.text();
+      const parsed = cleanAndParseJSON(rawText);
+      if (parsed) {
+        return { ...card, ...parsed, id: `ai_mod_free_${Date.now()}` };
       }
-    );
-
-    const data = await res.json();
-    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    const parsed = JSON.parse(rawText);
-
-    return {
-      ...card,
-      ...parsed,
-      id: `ai_mod_${Date.now()}`,
-      tags: [...(card.tags || []), `ai-${direction}`],
-    };
+    }
   } catch (err) {
     console.warn('AI modify failed, fallback used:', err);
-    return getModifiedFallback(card, direction);
+  }
+
+  return getModifiedFallback(card, direction);
+}
+
+/** Helper to safely parse JSON even if surrounded by whitespace or accidental backticks */
+function cleanAndParseJSON(raw) {
+  if (!raw) return null;
+  try {
+    const cleaned = raw.replace(/^```json/i, '').replace(/```$/i, '').trim();
+    return JSON.parse(cleaned);
+  } catch {
+    // Attempt extracting substring between { and }
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (match) {
+      try {
+        return JSON.parse(match[0]);
+      } catch {
+        return null;
+      }
+    }
+    return null;
   }
 }
 
 /**
- * Curated offline generative templates when no API key is supplied
+ * Curated offline generative templates
  */
 function getLocalCuratedCard(game, level, vibe) {
   const now = Date.now();
@@ -217,7 +276,6 @@ function getLocalCuratedCard(game, level, vibe) {
       tags: ['curated', vibe],
     };
   } else {
-    // Would You Rather
     const wyr = [
       {
         optionA: 'Spend a candlelit night whispering every secret desire you haven\'t confessed',
