@@ -16,6 +16,7 @@ import { drawCard, deckProgress, addCustomCard } from '../lib/deck.js';
 import { sounds } from '../lib/sound.js';
 import { toast } from '../lib/toast.js';
 import { fireConfetti } from '../lib/confetti.js';
+import { generateAICard, modifyCardWithAI, getApiKey, setApiKey } from '../lib/ai.js';
 
 // --- Game module registry ---
 // Each module exports: { renderCardContent(card, el), onReveal(card, el), onDone() }
@@ -117,6 +118,44 @@ export async function renderGame(game) {
 
       <div class="action-counts" id="action-counts"></div>
 
+      <!-- AI Assistant Controls -->
+      <div class="ai-controls-bar glass-card mb-4" style="padding: 0.85rem; border-color: rgba(196, 85, 106, 0.35);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+          <span style="font-size: var(--text-xs); font-weight: 800; color: var(--color-rose); letter-spacing: 0.05em;">✨ AI CUPID ASSISTANT</span>
+          <button class="btn-ghost btn-sm" id="btn-ai-toggle" style="font-size:var(--text-xs); padding: 0.2rem 0.6rem; min-height: unset; border-radius: var(--radius-full);">
+            ⚙️ AI Vibe & Key
+          </button>
+        </div>
+        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+          <button class="btn btn-ghost btn-sm" id="btn-ai-spice" style="flex: 1; min-width: 95px; font-size: var(--text-xs);" title="Make this card spicier and more exciting">
+            🔥 Spice Up
+          </button>
+          <button class="btn btn-ghost btn-sm" id="btn-ai-deep" style="flex: 1; min-width: 95px; font-size: var(--text-xs);" title="Make this deeper and more personal">
+            💭 Deeper
+          </button>
+          <button class="btn btn-ghost btn-sm" id="btn-ai-new" style="flex: 1; min-width: 95px; font-size: var(--text-xs);" title="Ask AI for a brand new question">
+            🎲 AI Re-Roll
+          </button>
+        </div>
+
+        <!-- Collapsible AI settings & prompt box -->
+        <div id="ai-panel" style="display:none; margin-top: 0.75rem; border-top: 1px dashed var(--border); padding-top: 0.75rem;">
+          <label for="ai-prompt-input" style="font-size: var(--text-xs); color: var(--text-muted); display: block; margin-bottom: 0.35rem;">
+            Custom Theme or Inside Joke:
+          </label>
+          <input type="text" id="ai-prompt-input" placeholder="e.g. 'about our funny first date', 'a flirty music dare'..." style="width: 100%; padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: var(--bg-glass); font-size: var(--text-sm); margin-bottom: 0.6rem; outline: none;" />
+
+          <label for="ai-key-input" style="font-size: var(--text-xs); color: var(--text-muted); display: block; margin-bottom: 0.35rem;">
+            Gemini API Key (Optional — Free from Google AI Studio):
+          </label>
+          <input type="password" id="ai-key-input" placeholder="AIzaSy... (leave blank to use built-in generator)" style="width: 100%; padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: var(--bg-glass); font-size: var(--text-sm); margin-bottom: 0.6rem; outline: none;" />
+
+          <div style="display:flex; justify-content: flex-end; gap: 0.5rem;">
+            <button class="btn btn-primary btn-sm" id="btn-ai-submit-custom">✨ Craft With AI</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Add your own card -->
       <button class="btn btn-ghost btn-sm w-full" id="btn-add-card" style="margin-bottom:.5rem">
         ${t('game.btnAddCard')}
@@ -163,8 +202,78 @@ export async function renderGame(game) {
     document.getElementById('add-card-form')?.classList.remove('visible');
   });
 
+  // Wire AI controls
+  const aiKeyInput = document.getElementById('ai-key-input');
+  if (aiKeyInput) aiKeyInput.value = getApiKey();
+
+  document.getElementById('btn-ai-toggle')?.addEventListener('click', () => {
+    const panel = document.getElementById('ai-panel');
+    if (panel) {
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+  });
+
+  document.getElementById('btn-ai-spice')?.addEventListener('click', async () => {
+    if (!_currentCard) return;
+    toast('✨ Spicing up with AI...', 'info', 1500);
+    const modified = await modifyCardWithAI(_currentCard, 'spicier');
+    applyCard(modified);
+    toast('🔥 Spiced up!', 'success');
+  });
+
+  document.getElementById('btn-ai-deep')?.addEventListener('click', async () => {
+    if (!_currentCard) return;
+    toast('✨ Deepening question...', 'info', 1500);
+    const modified = await modifyCardWithAI(_currentCard, 'deeper');
+    applyCard(modified);
+    toast('💭 Deeper & personal now!', 'success');
+  });
+
+  document.getElementById('btn-ai-new')?.addEventListener('click', async () => {
+    toast('✨ Generating new AI card...', 'info', 1500);
+    const aiCard = await generateAICard({ game: _game, level: _level, vibe: 'spicy' });
+    applyCard(aiCard);
+    toast('🎲 AI Card ready!', 'success');
+  });
+
+  document.getElementById('btn-ai-submit-custom')?.addEventListener('click', async () => {
+    const promptInput = document.getElementById('ai-prompt-input');
+    const keyInput = document.getElementById('ai-key-input');
+    if (keyInput) setApiKey(keyInput.value);
+
+    const customPrompt = promptInput?.value?.trim() || '';
+    toast('✨ Crafting custom card...', 'info', 2000);
+    const aiCard = await generateAICard({
+      game: _game,
+      level: _level,
+      vibe: 'custom',
+      customNote: customPrompt,
+    });
+    applyCard(aiCard);
+    toast('✨ Custom AI card loaded!', 'success');
+    document.getElementById('ai-panel').style.display = 'none';
+  });
+
   // Load first card
   await loadNextCard();
+}
+
+function applyCard(card) {
+  _currentCard = card;
+  const backFace = document.getElementById('card-back-face');
+  if (backFace && _gameModule) {
+    _gameModule.renderCardContent(_currentCard, backFace);
+  }
+  if (!_flipped) {
+    handleFlip();
+  } else {
+    const specificArea = document.getElementById('game-specific-area');
+    if (specificArea) specificArea.innerHTML = '';
+    _gameModule?.onReveal?.(_currentCard, specificArea, {
+      onDone: handleDone,
+      onNext: loadNextCard,
+    });
+  }
 }
 
 async function loadNextCard() {
