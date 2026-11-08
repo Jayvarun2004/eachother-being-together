@@ -1,27 +1,42 @@
 /**
  * src/views/home.js
- * Home screen — game picker, settings, level selector, play buttons.
+ * Home screen — game picker, romantic mood themes, level & vibe selectors, play buttons.
  */
 
 import { t } from '../lib/i18n.js';
 import { state } from '../lib/state.js';
 import { navigate } from '../lib/router.js';
-import { toggleTheme } from '../lib/theme.js';
+import { cycleTheme, getCurrentThemeObj } from '../lib/theme.js';
+import { toggleAmbientSound } from '../lib/sound.js';
 import { toast } from '../lib/toast.js';
 
 export function renderHome() {
   const app = document.getElementById('app');
 
   const level = state.get('level') ?? 'wholesome';
+  const vibe = state.get('vibe') ?? 'romantic';
   const p1 = state.get('player1') ?? 'Player 1';
   const p2 = state.get('player2') ?? 'Player 2';
+  const curTheme = getCurrentThemeObj();
+
+  const vibeLabels = {
+    romantic: '🌹 Romance',
+    spicy: '🔥 Spicy',
+    deep: '💭 Deep Talk',
+    playful: '🎉 Playful',
+  };
 
   app.innerHTML = /* html */ `
     <div class="view active animate-fade-in" id="view-home">
       <header class="app-header">
-        <span class="header-logo">💕 EBT</span>
+        <span class="header-logo">💕 Eachother</span>
         <div class="header-actions">
-          <button class="btn-icon" id="btn-theme" aria-label="Toggle theme" title="Toggle theme">🌙</button>
+          <button class="btn-icon" id="btn-ambient" aria-label="Toggle ambient rain" title="Ambient Sound (Rain/Lo-Fi)">
+            🌧️
+          </button>
+          <button class="btn-icon" id="btn-theme" aria-label="Switch aesthetic theme" title="Switch Theme: ${curTheme.name}">
+            ${curTheme.icon}
+          </button>
         </div>
       </header>
 
@@ -53,6 +68,17 @@ export function renderHome() {
         `).join('')}
       </div>
 
+      <!-- Tonight's Vibe (Feeds into AI & game atmosphere) -->
+      <div class="text-center mb-4">
+        <div style="display:flex; gap: 0.35rem; justify-content: center; flex-wrap: wrap;">
+          ${Object.entries(vibeLabels).map(([key, label]) => `
+            <button class="level-btn vibe-btn ${vibe === key ? 'active' : ''}" data-vibe="${key}" style="font-size: var(--text-xs); padding: 0.25rem 0.65rem;">
+              ${label}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+
       <!-- Game cards -->
       <div class="game-cards" role="list">
         ${gameCard('truth-or-dare', '🎲')}
@@ -77,14 +103,26 @@ export function renderHome() {
 
   // --- Interactivity ---
 
-  // Theme toggle
-  document.getElementById('btn-theme')?.addEventListener('click', () => {
-    const theme = toggleTheme();
-    document.getElementById('btn-theme').textContent = theme === 'dark' ? '☀️' : '🌙';
+  // Ambient sound toggle
+  let isAmbientOn = false;
+  document.getElementById('btn-ambient')?.addEventListener('click', () => {
+    const res = toggleAmbientSound();
+    isAmbientOn = res !== 'off';
+    const btn = document.getElementById('btn-ambient');
+    if (btn) btn.style.background = isAmbientOn ? 'rgba(34, 197, 94, 0.25)' : '';
+    toast(isAmbientOn ? '🌧️ Cozy rain ambiance on' : '🌧️ Ambiance off', 'info', 1500);
   });
-  // Set correct icon on load
-  const themeBtn = document.getElementById('btn-theme');
-  if (themeBtn) themeBtn.textContent = state.get('theme') === 'dark' ? '☀️' : '🌙';
+
+  // Aesthetic theme cycler
+  document.getElementById('btn-theme')?.addEventListener('click', () => {
+    const nextTheme = cycleTheme();
+    const btn = document.getElementById('btn-theme');
+    if (btn) {
+      btn.textContent = nextTheme.icon;
+      btn.title = `Theme: ${nextTheme.name}`;
+    }
+    toast(`Aesthetic: ${nextTheme.name} ${nextTheme.icon}`, 'info', 1200);
+  });
 
   // Save player names on change
   document.getElementById('inp-p1')?.addEventListener('input', e => {
@@ -95,15 +133,25 @@ export function renderHome() {
   });
 
   // Level buttons
-  document.querySelectorAll('.level-btn').forEach(btn => {
+  document.querySelectorAll('.level-btn:not(.vibe-btn)').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.level-btn:not(.vibe-btn)').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.set('level', btn.dataset.level);
     });
   });
 
-  // Game card click — select game and go to setup
+  // Vibe buttons
+  document.querySelectorAll('.vibe-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.set('vibe', btn.dataset.vibe);
+      toast(`Vibe set to: ${btn.textContent.trim()}`, 'success', 1200);
+    });
+  });
+
+  // Game card click
   document.querySelectorAll('.game-card').forEach(card => {
     card.addEventListener('click', () => {
       state.set('game', card.dataset.game);
@@ -111,7 +159,7 @@ export function renderHome() {
     });
   });
 
-  // Surprise us — pick random game
+  // Surprise us
   document.getElementById('btn-surprise')?.addEventListener('click', () => {
     const games = ['truth-or-dare', 'never-have-i-ever', 'would-you-rather'];
     state.set('game', games[Math.floor(Math.random() * games.length)]);

@@ -13,7 +13,7 @@ import { t } from '../lib/i18n.js';
 import { state } from '../lib/state.js';
 import { navigate } from '../lib/router.js';
 import { drawCard, deckProgress, addCustomCard } from '../lib/deck.js';
-import { sounds } from '../lib/sound.js';
+import { sounds, speakCardText } from '../lib/sound.js';
 import { toast } from '../lib/toast.js';
 import { fireConfetti } from '../lib/confetti.js';
 import { generateAICard, modifyCardWithAI, getApiKey, setApiKey, checkOllamaAvailable } from '../lib/ai.js';
@@ -122,9 +122,14 @@ export async function renderGame(game) {
       <div class="ai-controls-bar glass-card mb-4" style="padding: 0.85rem; border-color: rgba(196, 85, 106, 0.35);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
           <span id="ai-status-badge" style="font-size: var(--text-xs); font-weight: 800; color: var(--color-rose); letter-spacing: 0.05em;">✨ AI CUPID ASSISTANT</span>
-          <button class="btn-ghost btn-sm" id="btn-ai-toggle" style="font-size:var(--text-xs); padding: 0.2rem 0.6rem; min-height: unset; border-radius: var(--radius-full);">
-            ⚙️ AI Vibe & Key
-          </button>
+          <div style="display:flex; gap: 0.35rem;">
+            <button class="btn-ghost btn-sm" id="btn-speak-card" style="font-size:var(--text-xs); padding: 0.2rem 0.6rem; min-height: unset; border-radius: var(--radius-full);" title="Listen to question spoken aloud">
+              🔊 Speak
+            </button>
+            <button class="btn-ghost btn-sm" id="btn-ai-toggle" style="font-size:var(--text-xs); padding: 0.2rem 0.6rem; min-height: unset; border-radius: var(--radius-full);">
+              ⚙️ AI Vibe & Key
+            </button>
+          </div>
         </div>
         <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
           <button class="btn btn-ghost btn-sm" id="btn-ai-spice" style="flex: 1; min-width: 95px; font-size: var(--text-xs);" title="Make this card spicier and more exciting">
@@ -212,6 +217,12 @@ export async function renderGame(game) {
       badge.textContent = `⚡ OLLAMA (${model.toUpperCase()}) ACTIVE`;
       badge.style.color = '#16a34a';
     }
+  });
+
+  document.getElementById('btn-speak-card')?.addEventListener('click', () => {
+    if (!_currentCard) return;
+    const textToSpeak = _currentCard.text || `${_currentCard.optionA}. Or, ${_currentCard.optionB}`;
+    speakCardText(textToSpeak);
   });
 
   document.getElementById('btn-ai-toggle')?.addEventListener('click', () => {
