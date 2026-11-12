@@ -159,8 +159,8 @@ export function renderHome() {
         </button>
       </div>
 
-      <footer class="app-footer" style="padding:1rem 0; color:var(--text-muted); font-size:0.75rem; text-align:center;">
-        Made with 💕 for just the two of you
+      <footer class="app-footer" style="padding:1.25rem 0; color:var(--text-muted); font-size:0.8rem; text-align:center;">
+        Made with love 💕 for just the two of us
       </footer>
     </div>
   `;
