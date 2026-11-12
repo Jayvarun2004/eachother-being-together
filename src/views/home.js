@@ -26,6 +26,20 @@ export function renderHome() {
 
   app.innerHTML = /* html */ `
     <div class="view active animate-fade-in" id="view-home">
+      <!-- Floating Romantic Hearts & Cute Elements Background -->
+      <div class="floating-hearts-bg" aria-hidden="true">
+        <span>💕</span>
+        <span>💖</span>
+        <span>🌸</span>
+        <span>✨</span>
+        <span>💗</span>
+        <span>🌹</span>
+        <span>💫</span>
+        <span>💝</span>
+        <span>⭐</span>
+        <span>💓</span>
+      </div>
+
       <!-- Minimalist Apple Top Bar -->
       <header class="app-header">
         <a href="#home" class="header-logo" aria-label="Eachother Being Together">
