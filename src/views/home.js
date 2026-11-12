@@ -1,267 +1,173 @@
 /**
  * src/views/home.js
- * Aesthetic couples game room — Bento Grid, Lover's Capsule, Atmosphere Bar,
- * and expandable "More Romantic Activities" section.
+ * Clean, Simple & Elegant Home View
+ * Pure Apple aesthetic: Spacious, uncluttered, light-pink brand accents,
+ * easy game selection, and intimate couple keepsakes.
  */
 
-import { t } from '../lib/i18n.js';
 import { state } from '../lib/state.js';
 import { navigate } from '../lib/router.js';
-import { cycleTheme, getCurrentThemeObj } from '../lib/theme.js';
-import { toggleAmbientSound } from '../lib/sound.js';
-import { toast } from '../lib/toast.js';
 import { getVault } from '../lib/vault.js';
 
 export function renderHome() {
   const app = document.getElementById('app');
-
   const level = state.get('level') ?? 'wholesome';
-  const vibe = state.get('vibe') ?? 'romantic';
   const p1 = state.get('player1') ?? 'Player 1';
   const p2 = state.get('player2') ?? 'Player 2';
-  const curTheme = getCurrentThemeObj();
   const vaultCount = getVault().length;
-  const hasNamesSet = p1 !== 'Player 1' || p2 !== 'Player 2';
-
-  const vibeLabels = {
-    romantic: '🌹 Romance',
-    spicy: '🔥 Spicy',
-    deep: '💭 Pillow Talk',
-    playful: '🎉 Banter',
-  };
+  const selectedGame = state.get('game') ?? 'truth-or-dare';
 
   const levelLabels = {
     wholesome: '🌸 Wholesome',
     flirty: '💋 Flirty',
     spicy: '🔥 Spicy',
-    mix: '🎲 Mix it Up',
+    mix: '⚡ Mix It Up',
   };
 
   app.innerHTML = /* html */ `
     <div class="view active animate-fade-in" id="view-home">
-      <!-- Floating Romantic Hearts Background -->
-      <div class="floating-hearts-bg" aria-hidden="true">
-        <span>💕</span>
-        <span>💖</span>
-        <span>💗</span>
-        <span>❤️‍🔥</span>
-        <span>🌸</span>
-        <span>🌹</span>
-      </div>
-
-      <!-- Luxury Top Bar -->
+      <!-- Minimalist Apple Top Bar -->
       <header class="app-header">
-        <a href="#home" class="header-logo">
-          <span>💕</span>
-          <span>Eachother</span>
+        <a href="#home" class="header-logo" aria-label="Eachother Being Together">
+          <span class="header-logo-heart">💕</span>
+          <span class="header-logo-text">Eachother</span>
         </a>
         <div class="header-actions">
           <button class="btn-icon" id="btn-vault" aria-label="Love Vault" title="Love Vault">
             💌${vaultCount > 0 ? `<span class="vault-count-badge">${vaultCount}</span>` : ''}
           </button>
-          <button class="btn-icon" id="btn-ambient" aria-label="Toggle ambient rain" title="Ambient Rain Sound">
-            🌧️
-          </button>
-          <button class="btn-icon" id="btn-theme" aria-label="Switch aesthetic theme" title="Current Mood: ${curTheme.name}">
-            ${curTheme.icon}
-          </button>
-          <button class="btn-icon" id="btn-settings" aria-label="Settings & Privacy" title="Settings & Privacy">
+          <button class="btn-icon" id="btn-settings" aria-label="Settings" title="Settings & Privacy">
             ⚙️
           </button>
         </div>
       </header>
 
-      <!-- Lover's Capsule (Hero Card) -->
-      <div class="couple-capsule">
-        <div class="couple-names-pill">
-          <span class="player-badge-pill">💗 <span id="display-p1">${escHtml(p1)}</span></span>
-          <span class="couple-heart-divider">❤️‍🔥</span>
-          <span class="player-badge-pill">💙 <span id="display-p2">${escHtml(p2)}</span></span>
+      <!-- Couple Greeting Bar -->
+      <div class="couple-capsule" style="margin-bottom: 1.25rem;">
+        <div style="display:flex; align-items:center; gap:0.5rem; font-weight:600; font-size:var(--text-sm);">
+          <span style="font-size:1.15rem;">💕</span>
+          <span id="display-names" style="color:var(--text-primary);">${escHtml(p1)} & ${escHtml(p2)}</span>
         </div>
-        <button class="couple-edit-btn" id="btn-toggle-edit-names" title="Edit names">
-          ✏️ Edit
+        <button class="couple-edit-btn" id="btn-toggle-edit-names" style="color:#ffb3c6;">
+          ✏️ Edit Names
         </button>
       </div>
 
-      <!-- Names Drawer (Collapsible) -->
-      <div class="names-drawer" id="names-drawer">
-        <div class="names-drawer-row">
-          <input id="inp-p1" type="text" placeholder="Player 1" value="${escHtml(p1)}" maxlength="20" />
-          <input id="inp-p2" type="text" placeholder="Player 2" value="${escHtml(p2)}" maxlength="20" />
+      <!-- Names Editor Drawer (Hidden by default) -->
+      <div class="names-drawer" id="names-drawer" style="margin-bottom: 1.25rem;">
+        <div style="display:flex; gap:0.5rem;">
+          <input id="inp-p1" type="text" placeholder="Partner 1" value="${escHtml(p1)}" maxlength="20" style="flex:1; padding:0.6rem; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg-card); color:var(--text-primary);" />
+          <input id="inp-p2" type="text" placeholder="Partner 2" value="${escHtml(p2)}" maxlength="20" style="flex:1; padding:0.6rem; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg-card); color:var(--text-primary);" />
         </div>
       </div>
 
-      <!-- Atmosphere Controller (Level & Vibe in one unified container) -->
-      <div class="atmosphere-bar">
-        <div class="atmosphere-row">
-          <span class="atmosphere-label">Intensity</span>
+      <!-- Intensity (Level) Picker -->
+      <div style="margin-bottom: 1.25rem;">
+        <div style="display:flex; gap:0.35rem; background:rgba(120, 120, 128, 0.16); padding:3px; border-radius:9999px; overflow-x:auto;">
           ${['wholesome', 'flirty', 'spicy', 'mix']
             .map(
               (lvl) => `
-            <button class="segmented-pill level-pill ${level === lvl ? 'active' : ''}" data-level="${lvl}">
+            <button class="segmented-pill level-pill ${level === lvl ? 'active' : ''}" data-level="${lvl}" style="flex:1; padding:0.45rem 0.65rem; font-size:0.8rem; border-radius:9999px;">
               ${levelLabels[lvl]}
             </button>
           `
             )
             .join('')}
         </div>
-        <div class="atmosphere-row">
-          <span class="atmosphere-label">Atmosphere</span>
-          ${Object.entries(vibeLabels)
-            .map(
-              ([key, label]) => `
-            <button class="segmented-pill vibe-pill ${vibe === key ? 'active' : ''}" data-vibe="${key}">
-              ${label}
-            </button>
-          `
-            )
-            .join('')}
-        </div>
       </div>
 
-      <!-- 4 Primary Bento Games (Keeps Home Clean) -->
-      <div class="game-cards-bento" role="list">
-        ${renderBentoCard({
+      <!-- Clean Couple Games List -->
+      <div style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.5rem;" role="list">
+        ${renderCleanGameCard({
           game: 'truth-or-dare',
           emoji: '🎲',
           title: 'Truth or Dare',
-          badge: 'Classic',
-          desc: 'Spicy confessions & playful dares',
-          accentClass: 'bento-tod',
-          count: '150+ Cards',
+          tag: '85% Truths • Bonding',
+          desc: 'Deep romantic truths, vulnerability & sweet dares',
+          isSelected: selectedGame === 'truth-or-dare',
         })}
-        ${renderBentoCard({
+
+        ${renderCleanGameCard({
+          game: 'soul-sync',
+          emoji: '✨',
+          title: 'Soul Sync',
+          tag: 'Deep Connection',
+          desc: 'Thoughtful questions to bring your hearts closer',
+          isSelected: selectedGame === 'soul-sync',
+        })}
+
+        ${renderCleanGameCard({
+          game: 'how-well-do-you-know-me',
+          emoji: '🔮',
+          title: 'How Well Do You Know Me?',
+          tag: 'Quiz',
+          desc: 'Secretly answer questions and guess each other\'s choices',
+          isSelected: selectedGame === 'how-well-do-you-know-me',
+        })}
+
+        ${renderCleanGameCard({
           game: 'never-have-i-ever',
           emoji: '🙋',
-          title: 'Never Have I',
-          badge: 'Stories',
-          desc: 'Discover what you both secretly did',
-          accentClass: 'bento-nhie',
-          count: '75+ Cards',
+          title: 'Never Have I Ever',
+          tag: 'Stories',
+          desc: 'Discover sweet secrets and untold memories together',
+          isSelected: selectedGame === 'never-have-i-ever',
         })}
-        ${renderBentoCard({
+
+        ${renderCleanGameCard({
           game: 'would-you-rather',
           emoji: '🤔',
           title: 'Would You Rather',
-          badge: 'Dilemmas',
-          desc: 'Tough, funny & passionate choices',
-          accentClass: 'bento-wyr',
-          count: '75+ Cards',
-        })}
-        ${renderBentoCard({
-          game: 'who-is-most-likely',
-          emoji: '🧠',
-          title: 'Telepathy',
-          badge: 'Mind Reader',
-          desc: 'Who fits the description best?',
-          accentClass: 'bento-wml',
-          count: '75+ Cards',
+          tag: 'Dilemmas',
+          desc: 'Playful, romantic, and cozy scenarios for two',
+          isSelected: selectedGame === 'would-you-rather',
         })}
       </div>
 
-      <!-- Expandable More Romantic Features Section -->
-      <div class="more-section glass-card mb-4" style="padding:1rem;margin-top:1rem;">
-        <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" id="btn-toggle-more">
-          <div style="font-weight:700;font-size:var(--text-sm);display:flex;align-items:center;gap:0.5rem;">
-            <span>✨</span> More Games & Couple Moments
-          </div>
-          <span id="more-chevron" style="font-size:var(--text-xs);color:var(--text-muted);transition:transform 0.2s ease;">▼</span>
+      <!-- Couple Keepsakes (Simple & Uncluttered Pills) -->
+      <div style="margin-bottom: 1.5rem;">
+        <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0.6rem; padding-left:0.25rem;">
+          Couple Moments & Tools
         </div>
-
-        <div id="more-grid" style="display:none;grid-template-columns:1fr 1fr;gap:0.65rem;margin-top:0.85rem;">
-          <button class="btn btn-ghost more-action-btn" data-nav="game/soul-sync" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);border-color:var(--color-rose);">
-            <div style="font-size:1.3rem;">✨</div>
-            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;color:var(--color-rose);">Soul Sync</div>
-            <div style="font-size:0.65rem;color:var(--text-muted);">Deep intimacy questions</div>
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:0.5rem;">
+          <button class="btn btn-ghost more-action-btn" data-nav="date-roulette" style="padding:0.65rem 0.4rem; font-size:0.75rem; display:flex; flex-direction:column; align-items:center; gap:0.25rem; min-height:64px; border-radius:18px;">
+            <span style="font-size:1.25rem;">🎡</span>
+            <span>Roulette</span>
           </button>
-
-          <button class="btn btn-ghost more-action-btn" data-nav="game/finish-the-sentence" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);">
-            <div style="font-size:1.3rem;">✍️</div>
-            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;">Finish Sentence</div>
-            <div style="font-size:0.65rem;color:var(--text-muted);">Fill in the blanks</div>
+          <button class="btn btn-ghost more-action-btn" data-nav="days-together" style="padding:0.65rem 0.4rem; font-size:0.75rem; display:flex; flex-direction:column; align-items:center; gap:0.25rem; min-height:64px; border-radius:18px;">
+            <span style="font-size:1.25rem;">📅</span>
+            <span>Days</span>
           </button>
-
-          <button class="btn btn-ghost more-action-btn" data-nav="game/this-or-that" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);">
-            <div style="font-size:1.3rem;">⚡</div>
-            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;">This or That</div>
-            <div style="font-size:0.65rem;color:var(--text-muted);">Rapid-fire sync</div>
+          <button class="btn btn-ghost more-action-btn" data-nav="love-notes" style="padding:0.65rem 0.4rem; font-size:0.75rem; display:flex; flex-direction:column; align-items:center; gap:0.25rem; min-height:64px; border-radius:18px;">
+            <span style="font-size:1.25rem;">🍯</span>
+            <span>Notes</span>
           </button>
-
-          <button class="btn btn-ghost more-action-btn" data-nav="game/how-well-do-you-know-me" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);">
-            <div style="font-size:1.3rem;">🔮</div>
-            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;">Know Me Quiz</div>
-            <div style="font-size:0.65rem;color:var(--text-muted);">Guess partner answers</div>
-          </button>
-
-          <button class="btn btn-ghost more-action-btn" data-nav="date-roulette" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);">
-            <div style="font-size:1.3rem;">🎡</div>
-            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;">Date Roulette</div>
-            <div style="font-size:0.65rem;color:var(--text-muted);">Spin for dinner & film</div>
-          </button>
-
-          <button class="btn btn-ghost more-action-btn" data-nav="days-together" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);">
-            <div style="font-size:1.3rem;">📅</div>
-            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;">Days Together</div>
-            <div style="font-size:0.65rem;color:var(--text-muted);">Anniversary counter</div>
-          </button>
-
-          <button class="btn btn-ghost more-action-btn" data-nav="love-notes" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);">
-            <div style="font-size:1.3rem;">🍯</div>
-            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;">Love Notes Jar</div>
-            <div style="font-size:0.65rem;color:var(--text-muted);">"Open when..." notes</div>
-          </button>
-
-          <button class="btn btn-ghost more-action-btn" data-nav="memory-lane" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);">
-            <div style="font-size:1.3rem;">📸</div>
-            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;">Memory Lane</div>
-            <div style="font-size:0.65rem;color:var(--text-muted);">Private timeline</div>
-          </button>
-
-          <button class="btn btn-ghost more-action-btn" data-nav="scoreboard" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);">
-            <div style="font-size:1.3rem;">🏆</div>
-            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;">Scoreboard</div>
-            <div style="font-size:0.65rem;color:var(--text-muted);">Streaks & badges</div>
+          <button class="btn btn-ghost more-action-btn" data-nav="memory-lane" style="padding:0.65rem 0.4rem; font-size:0.75rem; display:flex; flex-direction:column; align-items:center; gap:0.25rem; min-height:64px; border-radius:18px;">
+            <span style="font-size:1.25rem;">📸</span>
+            <span>Memories</span>
           </button>
         </div>
       </div>
 
-      <!-- Bottom Floating Action Bar -->
-      <div class="bottom-actions-stack">
-        <button class="surprise-pill-btn" id="btn-surprise">
-          ✨ Surprise Us (Random Pick)
+      <!-- Two Clear Primary Play Actions -->
+      <div style="display:flex; gap:0.65rem; margin-bottom:1.5rem;">
+        <button class="btn btn-primary" id="btn-play-local" style="flex:1;">
+          🎮 Pass & Play (1 Phone)
         </button>
-        <div class="dock-play-row">
-          <button class="btn btn-primary" id="btn-play-local">
-            🎮 Play On This Device
-          </button>
-          <button class="btn btn-secondary" id="btn-play-online">
-            📡 Play With Friend
-          </button>
-        </div>
-        ${
-          hasNamesSet && state.get('game')
-            ? `
-          <button class="btn btn-ghost w-full" id="btn-fast-launch" style="font-size: var(--text-sm); border: 1.5px solid var(--accent); color: var(--accent);">
-            ⚡ Fast Play (${p1} & ${p2}) →
-          </button>
-        `
-            : ''
-        }
+        <button class="btn btn-secondary" id="btn-play-online" style="flex:1;">
+          📡 Play Online (2 Phones)
+        </button>
       </div>
 
-      <!-- PWA Install Prompt Banner container -->
-      <div id="pwa-install-container"></div>
-
-      <footer class="app-footer">${t('app.footer')}</footer>
+      <footer class="app-footer" style="padding:1rem 0; color:var(--text-muted); font-size:0.75rem; text-align:center;">
+        Made with 💕 for just the two of you
+      </footer>
     </div>
   `;
 
   // --- Wire Interactivity ---
 
-  // Vault / Favourites
   document.getElementById('btn-vault')?.addEventListener('click', () => navigate('vault'));
-
-  // Settings & Privacy
   document.getElementById('btn-settings')?.addEventListener('click', () => navigate('settings'));
 
   // Edit Names Drawer Toggle
@@ -274,38 +180,22 @@ export function renderHome() {
   document.getElementById('inp-p1')?.addEventListener('input', (e) => {
     const val = e.target.value.trim() || 'Player 1';
     state.set('player1', val);
-    const badge = document.getElementById('display-p1');
-    if (badge) badge.textContent = val;
+    updateGreeting();
   });
   document.getElementById('inp-p2')?.addEventListener('input', (e) => {
     const val = e.target.value.trim() || 'Player 2';
     state.set('player2', val);
-    const badge = document.getElementById('display-p2');
-    if (badge) badge.textContent = val;
+    updateGreeting();
   });
 
-  // Theme Cycler
-  document.getElementById('btn-theme')?.addEventListener('click', () => {
-    const nextTheme = cycleTheme();
-    const btn = document.getElementById('btn-theme');
-    if (btn) {
-      btn.textContent = nextTheme.icon;
-      btn.title = `Mood: ${nextTheme.name}`;
+  function updateGreeting() {
+    const el = document.getElementById('display-names');
+    if (el) {
+      el.textContent = `${state.get('player1') || 'Player 1'} & ${state.get('player2') || 'Player 2'}`;
     }
-    toast(`Mood set to: ${nextTheme.name} ${nextTheme.icon}`, 'info', 1200);
-  });
+  }
 
-  // Ambient Rain
-  let isAmbientOn = false;
-  document.getElementById('btn-ambient')?.addEventListener('click', () => {
-    const res = toggleAmbientSound();
-    isAmbientOn = res !== 'off';
-    const btn = document.getElementById('btn-ambient');
-    if (btn) btn.style.background = isAmbientOn ? 'rgba(34, 197, 94, 0.25)' : '';
-    toast(isAmbientOn ? '🌧️ Cozy rain ambiance on' : '🌧️ Ambiance off', 'info', 1200);
-  });
-
-  // Intensity (Level) Pills
+  // Level Selector
   document.querySelectorAll('.level-pill').forEach((btn) => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.level-pill').forEach((b) => b.classList.remove('active'));
@@ -314,175 +204,72 @@ export function renderHome() {
     });
   });
 
-  // Atmosphere (Vibe) Pills
-  document.querySelectorAll('.vibe-pill').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.vibe-pill').forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.set('vibe', btn.dataset.vibe);
-      toast(`Atmosphere: ${btn.textContent.trim()}`, 'success', 1000);
-    });
-  });
-
-  // Bento Game Card Clicks
-  document.querySelectorAll('.bento-card').forEach((card) => {
+  // Game Card Selection & Direct Launch
+  document.querySelectorAll('.clean-game-card').forEach((card) => {
     card.addEventListener('click', () => {
-      state.set('game', card.dataset.game);
+      const g = card.dataset.game;
+      state.set('game', g);
+      document.querySelectorAll('.clean-game-card').forEach((c) => c.classList.remove('selected'));
+      card.classList.add('selected');
       navigate('setup');
     });
   });
 
-  // Expandable More Section Toggle
-  let moreOpen = false;
-  document.getElementById('btn-toggle-more')?.addEventListener('click', () => {
-    moreOpen = !moreOpen;
-    const grid = document.getElementById('more-grid');
-    const chevron = document.getElementById('more-chevron');
-    if (grid) grid.style.display = moreOpen ? 'grid' : 'none';
-    if (chevron) chevron.style.transform = moreOpen ? 'rotate(180deg)' : 'none';
-  });
-
-  // More Section Actions
+  // Tool Pills
   document.querySelectorAll('.more-action-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const navTarget = btn.dataset.nav;
-      if (navTarget.startsWith('game/')) {
-        const gName = navTarget.replace('game/', '');
-        state.set('game', gName);
-        navigate('setup');
-      } else {
-        navigate(navTarget);
-      }
+      navigate(btn.dataset.nav);
     });
   });
 
-  // Surprise Us
-  document.getElementById('btn-surprise')?.addEventListener('click', () => {
-    const games = [
-      'truth-or-dare',
-      'never-have-i-ever',
-      'would-you-rather',
-      'who-is-most-likely',
-      'finish-the-sentence',
-      'this-or-that',
-      'how-well-do-you-know-me',
-    ];
-    state.set('game', games[Math.floor(Math.random() * games.length)]);
-    navigate('setup');
-  });
-
-  // Play Local
+  // Pass & Play Local
   document.getElementById('btn-play-local')?.addEventListener('click', () => {
-    if (!state.get('game')) {
-      toast('Pick a game card above first! 👆', 'warning');
-      return;
-    }
+    const g = state.get('game') || 'truth-or-dare';
+    state.set('game', g);
     state.set('mode', 'local');
     navigate('setup');
   });
 
-  // Play Online / With Friend
+  // Play Online
   document.getElementById('btn-play-online')?.addEventListener('click', () => {
-    if (!state.get('game')) {
-      toast('Pick a game card above first! 👆', 'warning');
-      return;
-    }
+    const g = state.get('game') || 'truth-or-dare';
+    state.set('game', g);
     state.set('mode', 'online');
     navigate('room');
   });
-
-  // Fast launch — skip setup if names already saved
-  document.getElementById('btn-fast-launch')?.addEventListener('click', () => {
-    state.set('mode', 'local');
-    state.patch({
-      currentTurn: 0,
-      scores: [0, 0],
-      skipsLeft: [3, 3],
-      vetosLeft: [1, 1],
-      cardsPlayed: 0,
-      skipsUsed: [0, 0],
-      vetosUsed: [0, 0],
-      nhieCommonCount: 0,
-      wyrMatchCount: 0,
-      wyrTotalCount: 0,
-    });
-    navigate(`game/${state.get('game')}`);
-  });
-
-  // PWA Install Prompt Wireup
-  initPwaInstallPrompt();
 }
 
-function initPwaInstallPrompt() {
-  const container = document.getElementById('pwa-install-container');
-  if (!container) return;
-  const isDismissed = localStorage.getItem('ebt_pwa_dismissed') === 'true';
-  const isStandalone =
-    window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  if (isDismissed || isStandalone) return;
-
-  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-
-  if (window._deferredInstallPrompt) {
-    container.innerHTML = `
-      <div class="glass-card" style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.75rem 1rem;margin:1rem 0;border-color:var(--color-rose);">
-        <div style="font-size:var(--text-xs);color:var(--text-primary);line-height:1.4;">
-          📲 <strong>Install App</strong> for full-screen couple gaming & offline play
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;">
-          <button class="btn btn-primary btn-sm" id="btn-pwa-install" style="font-size:var(--text-xs);padding:0.35rem 0.75rem;white-space:nowrap;">Install</button>
-          <button class="btn-icon" id="btn-pwa-dismiss" style="font-size:var(--text-xs);width:28px;height:28px;border:none;background:none;color:var(--text-muted);" aria-label="Dismiss">✕</button>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('btn-pwa-install')?.addEventListener('click', async () => {
-      if (window._deferredInstallPrompt) {
-        window._deferredInstallPrompt.prompt();
-        const choice = await window._deferredInstallPrompt.userChoice;
-        if (choice.outcome === 'accepted') {
-          toast('Thank you for installing! 💕', 'success');
-        }
-        window._deferredInstallPrompt = null;
-        container.innerHTML = '';
-      }
-    });
-
-    document.getElementById('btn-pwa-dismiss')?.addEventListener('click', () => {
-      localStorage.setItem('ebt_pwa_dismissed', 'true');
-      container.innerHTML = '';
-    });
-  } else if (isIos) {
-    container.innerHTML = `
-      <div class="glass-card" style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.75rem 1rem;margin:1rem 0;border-color:var(--color-rose);">
-        <div style="font-size:var(--text-xs);color:var(--text-primary);line-height:1.4;">
-          📲 Install on iPhone: Tap <strong>Share</strong>, then <strong>Add to Home Screen</strong> 💕
-        </div>
-        <button class="btn-icon" id="btn-pwa-dismiss" style="font-size:var(--text-xs);width:28px;height:28px;border:none;background:none;color:var(--text-muted);" aria-label="Dismiss">✕</button>
-      </div>
-    `;
-    document.getElementById('btn-pwa-dismiss')?.addEventListener('click', () => {
-      localStorage.setItem('ebt_pwa_dismissed', 'true');
-      container.innerHTML = '';
-    });
-  }
-}
-
-function renderBentoCard({ game, emoji, title, badge, desc, accentClass, count }) {
+function renderCleanGameCard({ game, emoji, title, tag, desc, isSelected }) {
   return /* html */ `
-    <div class="bento-card ${accentClass}" role="listitem" data-game="${game}" tabindex="0" aria-label="${title}">
-      <div>
-        <div class="bento-card-top">
-          <span class="bento-icon">${emoji}</span>
-          <span class="bento-badge">${badge}</span>
+    <div class="clean-game-card ${isSelected ? 'selected' : ''}" data-game="${game}" style="
+      background: var(--bg-card);
+      border: 1.5px solid ${isSelected ? 'var(--color-rose)' : 'var(--border)'};
+      border-radius: 20px;
+      padding: 0.95rem 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      transition: all var(--transition-base);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: ${isSelected ? '0 6px 20px rgba(255, 45, 85, 0.25)' : 'var(--shadow)'};
+    ">
+      <div style="font-size: 2.1rem; line-height: 1; flex-shrink: 0;">${emoji}</div>
+      <div style="flex: 1; min-width: 0;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 0.2rem;">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0; letter-spacing: -0.015em;">
+            ${title}
+          </h3>
+          <span style="font-size: 0.68rem; font-weight: 600; color: #ffb3c6; background: rgba(255, 179, 198, 0.12); padding: 0.15rem 0.5rem; border-radius: 9999px;">
+            ${tag}
+          </span>
         </div>
-        <h3 class="bento-title">${title}</h3>
-        <p class="bento-desc">${desc}</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.35;">
+          ${desc}
+        </p>
       </div>
-      <div class="bento-cta">
-        <span>${count}</span>
-        <span>Play →</span>
-      </div>
+      <div style="color: var(--text-muted); font-size: 1rem; flex-shrink: 0;">→</div>
     </div>
   `;
 }
