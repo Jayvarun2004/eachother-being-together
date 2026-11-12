@@ -10,7 +10,7 @@
  *  - Total failure            → Inline offline HTML
  */
 
-const CACHE_NAME = 'ebt-v1';
+const CACHE_NAME = 'ebt-v3';
 
 /** Resources pre-cached at install time (app shell). */
 const PRECACHE_URLS = [
@@ -208,8 +208,8 @@ self.addEventListener('fetch', (event) => {
   // --- Routing ---
 
   if (isAppShell(url, event.request)) {
-    // App shell → cache-first so it loads instantly offline.
-    event.respondWith(cacheFirst(event.request));
+    // App shell → network-first so new releases appear immediately, with cache fallback for offline!
+    event.respondWith(networkFirst(event.request));
     return;
   }
 
