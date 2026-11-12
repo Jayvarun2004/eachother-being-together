@@ -91,3 +91,19 @@ window.addEventListener('offline', () =>
   toast('⚠️ You\'re offline. Local play still works!', 'warning', 4000)
 );
 window.addEventListener('online', () => toast('✅ Back online!', 'success', 2000));
+
+// Interactive Touch-Reactive Floating Hearts
+window.addEventListener('pointerdown', (e) => {
+  if (['INPUT', 'TEXTAREA', 'BUTTON'].includes(e.target?.tagName)) return;
+  const heart = document.createElement('div');
+  heart.className = 'tap-heart-particle';
+  const symbols = ['💕', '💖', '💗', '✨', '🌸', '💓'];
+  heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+  heart.style.cssText = `
+    left: ${e.clientX}px;
+    top: ${e.clientY}px;
+    font-size: ${Math.random() * 0.5 + 1.25}rem;
+  `;
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 850);
+});

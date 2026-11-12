@@ -2288,6 +2288,61 @@ a:hover {
   }
 }
 
+/* Touch-Reactive Heart Burst Particle */
+.tap-heart-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  user-select: none;
+  animation: tap-heart-float 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tap-heart-float {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6) rotate(0deg);
+    opacity: 0.9;
+  }
+  40% {
+    opacity: 1;
+    filter: drop-shadow(0 2px 8px rgba(255, 179, 198, 0.6));
+  }
+  100% {
+    transform: translate(calc(-50% + 15px), calc(-50% - 65px)) scale(1.2) rotate(16deg);
+    opacity: 0;
+  }
+}
+
+/* Pastel Card Level Auras */
+.flip-card[data-card-level='wholesome'] .flip-card-front,
+.flip-card[data-card-level='wholesome'] .flip-card-back {
+  border-color: rgba(255, 179, 198, 0.35) !important;
+  box-shadow: 0 12px 36px rgba(255, 179, 198, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+}
+
+.flip-card[data-card-level='flirty'] .flip-card-front,
+.flip-card[data-card-level='flirty'] .flip-card-back {
+  border-color: rgba(255, 110, 140, 0.4) !important;
+  box-shadow: 0 12px 40px rgba(255, 110, 140, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+}
+
+.flip-card[data-card-level='spicy'] .flip-card-front,
+.flip-card[data-card-level='spicy'] .flip-card-back {
+  border-color: rgba(255, 45, 85, 0.5) !important;
+  box-shadow: 0 14px 44px rgba(255, 45, 85, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Daily Question Widget */
+.daily-question-card {
+  background: var(--bg-card);
+  border: 1.5px solid rgba(255, 179, 198, 0.35);
+  border-radius: 22px;
+  padding: 1.15rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 10px 30px rgba(255, 179, 198, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
 /* Mobile-first viewport sizing & safe area insets */
 html,
 body {

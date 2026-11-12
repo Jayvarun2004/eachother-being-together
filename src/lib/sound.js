@@ -44,11 +44,14 @@ function playTone(freq, duration = 0.15, type = 'sine', gain = 0.3) {
 
 export const sounds = {
   flip() {
-    playTone(440, 0.1, 'sine');
+    // Crisp Apple-like haptic paper click + subtle harmonic chime
+    playTone(1200, 0.03, 'sine', 0.15);
+    setTimeout(() => playTone(880, 0.06, 'triangle', 0.1), 20);
   },
   done() {
-    playTone(660, 0.2, 'triangle');
-    setTimeout(() => playTone(880, 0.15, 'triangle'), 100);
+    // Romantic warm two-tone chime
+    playTone(587, 0.12, 'sine', 0.2);
+    setTimeout(() => playTone(880, 0.18, 'sine', 0.25), 80);
   },
   skip() {
     playTone(330, 0.1, 'sawtooth', 0.15);

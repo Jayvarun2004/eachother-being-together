@@ -8,6 +8,7 @@
 import { state } from '../lib/state.js';
 import { navigate } from '../lib/router.js';
 import { getVault } from '../lib/vault.js';
+import { toast } from '../lib/toast.js';
 
 export function renderHome() {
   const app = document.getElementById('app');
@@ -87,6 +88,25 @@ export function renderHome() {
           `
             )
             .join('')}
+        </div>
+      </div>
+
+      <!-- Our Daily Question Card -->
+      <div class="daily-question-card animate-fade-in">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.45rem;">
+          <span style="font-size:0.7rem; font-weight:700; color:#ffb3c6; letter-spacing:0.06em; text-transform:uppercase;">
+            ✦ TODAY'S QUESTION FOR US
+          </span>
+          <span style="font-size:0.9rem;">💌</span>
+        </div>
+        <p style="font-size:0.92rem; font-weight:600; color:var(--text-primary); margin:0 0 0.65rem 0; line-height:1.45;">
+          "${getDailyQuestion()}"
+        </p>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.7rem; color:var(--text-muted);">New question every 24 hours</span>
+          <button class="btn btn-ghost btn-sm" id="btn-daily-answered" style="font-size:0.72rem; padding:0.25rem 0.65rem; border-radius:9999px; color:#ffb3c6; border-color:rgba(255,179,198,0.35);">
+            💖 We Answered Today
+          </button>
         </div>
       </div>
 
@@ -251,6 +271,55 @@ export function renderHome() {
     state.set('mode', 'online');
     navigate('room');
   });
+
+  // Daily Question Discussed
+  document.getElementById('btn-daily-answered')?.addEventListener('click', () => {
+    const btn = document.getElementById('btn-daily-answered');
+    if (btn) {
+      btn.textContent = '✨ Answered! 💕';
+      btn.style.background = 'rgba(255, 179, 198, 0.2)';
+    }
+    toast('💖 Beautiful! Keep nurturing that bond.', 'success', 2000);
+  });
+}
+
+const DAILY_QUESTIONS = [
+  'What is one small thing I did this week that made you feel deeply appreciated?',
+  'When was the last time you looked at me and felt a sudden rush of love?',
+  'What is your all-time favorite quiet memory of us together?',
+  'What is a dream or secret goal of yours that you haven\'t told anyone else, but feel safe telling me?',
+  'What is one little habit of mine that never fails to make your heart smile?',
+  'What is something thoughtful we can do together this upcoming weekend?',
+  'If you could whisper one gentle reassurance to my heart right now, what would it be?',
+  'What was the exact moment in our journey when you felt: "Yes, this person is my home"?',
+  'What is your favorite picture of us, and what makes that specific moment so special?',
+  'What is one promise you make to me in your heart every time you look at me?',
+  'What is a silly or funny inside joke of ours that still makes you laugh?',
+  'What is one way our relationship has gently helped you grow into a happier person?',
+  'What is an affectionate touch of mine that gives you butterflies every single time?',
+  'If you had 24 hours alone with me with zero phones or interruptions, how would our day look?',
+  'What is something you admire about my heart or personality that you rarely say aloud?',
+  'What is one tradition or small everyday habit you hope we still share when we are 80?',
+  'What is a song, place, or scent that instantly brings warm thoughts of me?',
+  'What made you realize that I am different from anyone else who has ever been in your life?',
+  'What is your favorite compliment I ever gave you that truly stuck in your heart?',
+  'What is something about our relationship that feels different and more sacred than anything before?',
+  'How do you feel when we embrace tightly after a tiring day?',
+  'What is one question about my past or childhood that you still want to ask me?',
+  'What is your favorite memory of us laughing together until our stomachs hurt?',
+  'If our love story was a book, what would be the title of our current chapter?',
+  'What is a gentle touch or gesture from me that can instantly melt away your stress?',
+  'What is a small everyday ritual of ours (morning coffee, goodnight hugs) that you cherish most?',
+  'What is one dream or destination you cannot imagine experiencing without having me by your side?',
+  'What is a compliment you have always wanted to give me but felt too shy to say?',
+  'What is the kindest thing I have ever whispered to you that you still hold close?',
+  'Look into my eyes for 10 seconds right now and tell me: what do you love most about us?',
+  'What are you most grateful for about our bond today?',
+];
+
+function getDailyQuestion() {
+  const dayIndex = Math.floor(Date.now() / 86400000) % DAILY_QUESTIONS.length;
+  return DAILY_QUESTIONS[dayIndex];
 }
 
 function renderCleanGameCard({ game, emoji, title, tag, desc, isSelected }) {
