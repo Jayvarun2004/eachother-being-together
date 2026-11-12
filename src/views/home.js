@@ -82,7 +82,7 @@ export function renderHome() {
           game: 'truth-or-dare',
           emoji: '🎲',
           title: 'Truth or Dare',
-          tag: '85% Truths • Bonding',
+          tag: 'Romantic',
           desc: 'Deep romantic truths, vulnerability & sweet dares',
           isSelected: selectedGame === 'truth-or-dare',
         })}
