@@ -1,14 +1,12 @@
 /**
  * src/lib/deck.js
  * Card deck manager — loads JSON card files, shuffles, tracks played cards,
- * and prevents repeats until the whole deck is used.
- *
- * To add a new game: add cards to /cards/<game>/<level>.json
- * and register the game slug here (or it auto-discovers from the filename).
+ * permanently remembers seen cards so they NEVER repeat across sessions,
+ * and seamlessly auto-generates fresh partner-bonding cards when needed.
  */
 
 import { toast } from './toast.js';
-import { t } from './i18n.js';
+import { getSeenCardIds, markCardSeen, generateProceduralCards } from './card-generator.js';
 
 const cardDecks = import.meta.glob('../../cards/*/*.json', { eager: true });
 
@@ -17,24 +15,25 @@ const _decks = {}; // { 'truth-or-dare|wholesome': { cards: [], index: 0 } }
 
 /**
  * Load a card deck for a game+level combination.
- * Falls back to a previous deck if already loaded.
- * @param {string} game  - e.g. 'truth-or-dare'
+ * Filters out ANY card that has ever been seen before.
+ * Auto-generates new unique cards if unplayed count is low.
+ * @param {string} game  - e.g. 'truth-or-dare', 'soul-sync'
  * @param {string} level - 'wholesome' | 'flirty' | 'spicy'
  * @returns {Promise<Card[]>}
  */
 export async function loadDeck(game, level) {
   const key = `${game}|${level}`;
-  if (_decks[key]) return _decks[key].cards;
+  if (_decks[key] && _decks[key].cards.length > 0) return _decks[key].cards;
 
   try {
     const mod = cardDecks[`../../cards/${game}/${level}.json`];
-    const cards = [...(mod?.default ?? mod ?? [])];
+    const rawCards = [...(mod?.default ?? mod ?? [])];
 
     // Merge custom cards saved by the user
     const customKey = `ebt_custom_${game}_${level}`;
     try {
       const custom = JSON.parse(localStorage.getItem(customKey) ?? '[]');
-      cards.push(...custom);
+      rawCards.push(...custom);
     } catch {
       /* ignore */
     }
@@ -43,21 +42,50 @@ export async function loadDeck(game, level) {
     const secretKey = `ebt_secret_${game}_${level}`;
     try {
       const secrets = JSON.parse(localStorage.getItem(secretKey) ?? '[]');
-      cards.push(...secrets);
+      rawCards.push(...secrets);
     } catch {
       /* ignore */
     }
 
-    _decks[key] = { cards: shuffle(cards), index: 0 };
+    // Filter out cards that have been seen in ANY past session
+    const seenIds = getSeenCardIds();
+    let unplayedCards = rawCards.filter((c) => !seenIds.has(c.id));
+
+    // Truth or Dare specific requirement:
+    // User requested: "in t or d i want max of them as truths and partner based questions to make our bond more stronger"
+    if (game === 'truth-or-dare') {
+      const truths = unplayedCards.filter((c) => c.type === 'truth');
+      const dares = unplayedCards.filter((c) => c.type === 'dare');
+
+      // Keep ~85% truths, ~15% dares
+      const maxDares = Math.max(2, Math.floor(truths.length * 0.18));
+      const balancedDares = shuffle(dares).slice(0, maxDares);
+      unplayedCards = shuffle([...truths, ...balancedDares]);
+    } else {
+      unplayedCards = shuffle(unplayedCards);
+    }
+
+    // If deck has fewer than 15 unplayed cards, auto-generate fresh partner-bonding cards!
+    if (unplayedCards.length < 15) {
+      const freshCards = generateProceduralCards(game, level, 25);
+      unplayedCards.push(...freshCards);
+    }
+
+    _decks[key] = { cards: unplayedCards, index: 0 };
     return _decks[key].cards;
   } catch (e) {
     console.error('deck: failed to load', key, e);
-    return [];
+    // Even if load fails, provide fresh procedural cards
+    const fallbackCards = generateProceduralCards(game, level, 25);
+    _decks[key] = { cards: fallbackCards, index: 0 };
+    return fallbackCards;
   }
 }
 
 /**
- * Draw the next card. Reshuffles when deck is exhausted.
+ * Draw the next card.
+ * Permanently saves the card ID to localStorage so it is NEVER shown again.
+ * Dynamically replenishes the deck when approaching the end.
  * @param {string} game
  * @param {string} level
  * @returns {Promise<Card|null>}
@@ -68,13 +96,20 @@ export async function drawCard(game, level) {
   const deck = _decks[key];
   if (!deck || deck.cards.length === 0) return null;
 
-  if (deck.index >= deck.cards.length) {
-    deck.cards = shuffle(deck.cards);
-    deck.index = 0;
-    toast(t('game.deckDone'), 'info', 2500);
+  // If we reached the end or have fewer than 3 left, auto-generate more!
+  if (deck.index >= deck.cards.length - 2) {
+    const extraCards = generateProceduralCards(game, level, 20);
+    deck.cards.push(...extraCards);
+    toast('✦ Auto-generated fresh romantic prompts for you', 'info', 2000);
   }
 
-  return deck.cards[deck.index++];
+  const card = deck.cards[deck.index++];
+  if (card && card.id) {
+    // Permanently record that this card was seen
+    markCardSeen(card.id);
+  }
+
+  return card;
 }
 
 /** Progress info for the deck progress bar */

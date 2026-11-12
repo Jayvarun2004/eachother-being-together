@@ -22,6 +22,10 @@ export function renderSetup() {
     'never-have-i-ever': '🙋',
     'would-you-rather': '🤔',
     'who-is-most-likely': '🔮',
+    'finish-the-sentence': '✍️',
+    'this-or-that': '⚡',
+    'how-well-do-you-know-me': '🧠',
+    'soul-sync': '✨',
   };
 
   const presets = [

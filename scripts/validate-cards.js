@@ -28,6 +28,7 @@ const VALID_GAMES = [
   'finish-the-sentence',
   'this-or-that',
   'how-well-do-you-know-me',
+  'soul-sync',
 ];
 const MIN_CARDS = 15;
 const MAX_TEXT_LENGTH = 300;

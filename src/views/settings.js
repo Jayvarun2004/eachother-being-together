@@ -5,11 +5,13 @@
 
 import { navigate } from '../lib/router.js';
 import { hasPasscode, setPasscode, clearPasscode, clearAllDeviceData } from '../lib/passcode.js';
+import { getSeenCardIds, resetSeenHistory } from '../lib/card-generator.js';
 import { toast } from '../lib/toast.js';
 
 export function renderSettings() {
   const app = document.getElementById('app');
   const locked = hasPasscode();
+  const seenCount = getSeenCardIds().size;
 
   app.innerHTML = /* html */ `
     <div class="view active animate-slide-up" id="view-settings">
@@ -52,6 +54,25 @@ export function renderSettings() {
             </div>
           `
           }
+        </div>
+
+          <!-- Card Memory & Zero-Repeats -->
+        <div class="glass-card mb-4" style="padding:1.25rem;">
+          <h2 style="font-size:var(--text-md);font-weight:700;margin-bottom:0.35rem;display:flex;align-items:center;gap:0.5rem;">
+            <span>✨</span> Permanent Memory & Zero-Repeats
+          </h2>
+          <p style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:0.75rem;line-height:1.4;">
+            Every card you play is permanently remembered so it is never shown again. When you run low, fresh romantic prompts are automatically created for you.
+          </p>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem;background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.2);border-radius:var(--radius-md);">
+            <div>
+              <div style="font-size:var(--text-xs);color:var(--text-muted);">Unique cards seen:</div>
+              <div style="font-size:var(--text-lg);font-weight:700;color:var(--color-rose);">${seenCount} cards</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="btn-reset-memory" style="font-size:var(--text-xs);">
+              Reset Memory
+            </button>
+          </div>
         </div>
 
         <!-- About & Privacy Guarantee -->
@@ -100,6 +121,14 @@ export function renderSettings() {
     ) {
       clearPasscode();
       toast('Passcode removed', 'info');
+      renderSettings();
+    }
+  });
+
+  document.getElementById('btn-reset-memory')?.addEventListener('click', () => {
+    if (window.confirm('Reset card memory so you can experience all cards again?')) {
+      resetSeenHistory();
+      toast('Card memory reset! All cards are fresh again.', 'success');
       renderSettings();
     }
   });

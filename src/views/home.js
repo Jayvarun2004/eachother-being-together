@@ -169,6 +169,12 @@ export function renderHome() {
         </div>
 
         <div id="more-grid" style="display:none;grid-template-columns:1fr 1fr;gap:0.65rem;margin-top:0.85rem;">
+          <button class="btn btn-ghost more-action-btn" data-nav="game/soul-sync" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);border-color:var(--color-rose);">
+            <div style="font-size:1.3rem;">✨</div>
+            <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;color:var(--color-rose);">Soul Sync</div>
+            <div style="font-size:0.65rem;color:var(--text-muted);">Deep intimacy questions</div>
+          </button>
+
           <button class="btn btn-ghost more-action-btn" data-nav="game/finish-the-sentence" style="text-align:left;padding:0.75rem;height:auto;border-radius:var(--radius-md);">
             <div style="font-size:1.3rem;">✍️</div>
             <div style="font-weight:700;font-size:var(--text-xs);margin-top:0.2rem;">Finish Sentence</div>

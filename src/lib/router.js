@@ -30,6 +30,7 @@ const ROUTES = {
   'game/finish-the-sentence': () => renderGame('finish-the-sentence'),
   'game/this-or-that': () => renderGame('this-or-that'),
   'game/how-well-do-you-know-me': () => renderGame('how-well-do-you-know-me'),
+  'game/soul-sync': () => renderGame('soul-sync'),
   'days-together': renderDaysTogether,
   'date-roulette': renderDateRoulette,
   'love-notes': renderLoveNotes,
