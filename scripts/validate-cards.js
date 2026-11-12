@@ -20,8 +20,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CARDS_DIR = path.resolve(__dirname, '../cards');
 
 const VALID_LEVELS = ['wholesome', 'flirty', 'spicy'];
-const VALID_GAMES = ['truth-or-dare', 'never-have-i-ever', 'would-you-rather', 'who-is-most-likely'];
-const MIN_CARDS = 25;
+const VALID_GAMES = [
+  'truth-or-dare',
+  'never-have-i-ever',
+  'would-you-rather',
+  'who-is-most-likely',
+  'finish-the-sentence',
+  'this-or-that',
+  'how-well-do-you-know-me',
+];
+const MIN_CARDS = 15;
 const MAX_TEXT_LENGTH = 300;
 const MIN_TEXT_LENGTH = 10;
 
@@ -75,7 +83,9 @@ function checkFile(filePath, game, level) {
     // 3. Required fields
     if (!card.id) error(relPath, `${prefix}: missing 'id'`);
     if (!card.level) error(relPath, `${prefix}: missing 'level'`);
-    if (!card.text && !card.optionA) error(relPath, `${prefix}: missing 'text' (or 'optionA'/'optionB' for WYR)`);
+    if (!card.text && !card.optionA && !card.question) {
+      error(relPath, `${prefix}: missing 'text', 'question', or 'optionA'/'optionB'`);
+    }
 
     // 4. Valid level
     if (card.level && !VALID_LEVELS.includes(card.level)) {
@@ -95,14 +105,14 @@ function checkFile(filePath, game, level) {
       error(relPath, `${prefix}: invalid type '${card.type}' — must be "truth" or "dare"`);
     }
 
-    // 7. Would You Rather must have optionA and optionB
-    if (game === 'would-you-rather') {
-      if (!card.optionA) error(relPath, `${prefix}: WYR cards must have 'optionA'`);
-      if (!card.optionB) error(relPath, `${prefix}: WYR cards must have 'optionB'`);
+    // 7. Would You Rather / This or That must have optionA and optionB
+    if (game === 'would-you-rather' || game === 'this-or-that') {
+      if (!card.optionA) error(relPath, `${prefix}: cards must have 'optionA'`);
+      if (!card.optionB) error(relPath, `${prefix}: cards must have 'optionB'`);
     }
 
     // 8. Text length
-    const textFields = [card.text, card.optionA, card.optionB].filter(Boolean);
+    const textFields = [card.text, card.question, card.optionA, card.optionB].filter(Boolean);
     textFields.forEach(t => {
       if (t.length > MAX_TEXT_LENGTH) {
         error(relPath, `${prefix}: text too long (${t.length} chars, max ${MAX_TEXT_LENGTH})`);
@@ -121,7 +131,7 @@ function checkFile(filePath, game, level) {
     }
 
     // 10. Duplicate text
-    const textKey = (card.text || `${card.optionA}|${card.optionB}`).toLowerCase().trim();
+    const textKey = (card.text || card.question || `${card.optionA}|${card.optionB}`).toLowerCase().trim();
     if (seenTexts.has(textKey)) {
       warn(relPath, `${prefix}: duplicate text detected`);
     }

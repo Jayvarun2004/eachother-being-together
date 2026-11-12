@@ -36,5 +36,7 @@ export function t(key, vars = {}) {
     if (value === undefined) return key; // fallback: return key itself
   }
   if (typeof value !== 'string') return key;
-  return value.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? String(vars[k]) : `{${k}}`));
+  return value.replace(/\{(\w+)\}/g, (_, k) =>
+    vars[k] !== undefined ? String(vars[k]) : `{${k}}`
+  );
 }

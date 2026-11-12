@@ -1,0 +1,152 @@
+[
+  {
+    "id": "hwd-w-001",
+    "question": "What is my absolute favorite way to unwind after a brutal day?",
+    "options": [
+      "Taking a hot shower & sleeping early",
+      "Watching comfort shows in bed with snacks",
+      "Talking it through or venting together"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-002",
+    "question": "Which pet would I adopt in a heartbeat if we had a huge yard?",
+    "options": [
+      "A giant fluffy golden retriever",
+      "A couple of friendly barnyard goats",
+      "A sleek rescue house cat"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-003",
+    "question": "What is my biggest comfort food weakness?",
+    "options": [
+      "Hot piping pizza with garlic crust",
+      "A huge bowl of creamy pasta",
+      "Warm cookies or ice cream sundae"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-004",
+    "question": "If I could wake up with one superpower, which would I pick?",
+    "options": [
+      "Flying wherever I want instantly",
+      "Reading minds and understanding emotions",
+      "Pausing time to sleep extra hours"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-005",
+    "question": "What annoys me fastest when we are out in public?",
+    "options": [
+      "People walking painfully slow in front of me",
+      "Rude behavior to restaurant staff",
+      "Loud phone calls on speaker"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-006",
+    "question": "Which chore around our home do I secretly dislike doing most?",
+    "options": [
+      "Washing mountains of greasy dishes",
+      "Folding and putting away piles of laundry",
+      "Taking out trash and recycling"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-007",
+    "question": "What is my ideal vacation style?",
+    "options": [
+      "Packed schedule with tours & historic spots",
+      "100% relaxation on beach chairs with drinks",
+      "Cozy cabin in nature with zero noise"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-008",
+    "question": "What genre of music do I always sing loudest to in the car?",
+    "options": [
+      "90s & 2000s Pop and R&B throwbacks",
+      "Acoustic indie or classic rock",
+      "High energy dance & electronic beats"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-009",
+    "question": "How do I handle having a common head cold?",
+    "options": [
+      "Like a stoic soldier who claims they are fine",
+      "Like a dramatic Victorian orphan in need of soup",
+      "Sleeping 18 hours straight like a bear"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-010",
+    "question": "What is my biggest irrational fear?",
+    "options": [
+      "Spiders, insects, or creepy crawlies",
+      "Heights and rickety suspension bridges",
+      "Dark deep ocean water where I can't see"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-011",
+    "question": "If we won a million dollars tomorrow, what is the first thing I would buy?",
+    "options": [
+      "A dream home with a big kitchen and garden",
+      "First class tickets around the entire world",
+      "Paying off every debt and investing safely"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-012",
+    "question": "What is my favorite hot drink order at a café?",
+    "options": [
+      "Classic creamy vanilla latte or cappuccino",
+      "Hot chai tea or matcha latte",
+      "Rich hot chocolate with extra whipped cream"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-013",
+    "question": "What type of movies do I secretly get teary-eyed watching?",
+    "options": [
+      "Emotional films with loyal dogs or animals",
+      "Heartwarming family reunion moments",
+      "Heartbreaking tragic romance stories"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-014",
+    "question": "What was my favorite subject back in school?",
+    "options": [
+      "English literature or creative writing",
+      "History, geography, or social studies",
+      "Science, biology, or art & design"
+    ],
+    "level": "wholesome"
+  },
+  {
+    "id": "hwd-w-015",
+    "question": "How many alarms do I normally need to actually get out of bed?",
+    "options": [
+      "Exactly one — I am up on the first ring",
+      "Two to three alarms with snoozes",
+      "At least five alarms every ten minutes"
+    ],
+    "level": "wholesome"
+  }
+]

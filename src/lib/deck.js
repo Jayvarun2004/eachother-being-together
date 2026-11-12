@@ -35,7 +35,18 @@ export async function loadDeck(game, level) {
     try {
       const custom = JSON.parse(localStorage.getItem(customKey) ?? '[]');
       cards.push(...custom);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
+
+    // Merge secret partner cards
+    const secretKey = `ebt_secret_${game}_${level}`;
+    try {
+      const secrets = JSON.parse(localStorage.getItem(secretKey) ?? '[]');
+      cards.push(...secrets);
+    } catch {
+      /* ignore */
+    }
 
     _decks[key] = { cards: shuffle(cards), index: 0 };
     return _decks[key].cards;
@@ -93,13 +104,65 @@ export function addCustomCard(game, level, text) {
     const existing = JSON.parse(localStorage.getItem(storageKey) ?? '[]');
     existing.push(card);
     localStorage.setItem(storageKey, JSON.stringify(existing));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 
   // Add to live deck too
   const key = `${game}|${level}`;
   if (_decks[key]) {
     _decks[key].cards.push(card);
   }
+}
+
+/**
+ * Save a secret card for partner to discover.
+ * @param {string} game
+ * @param {string} level
+ * @param {string} text
+ * @param {string} [type]
+ * @returns {{ ok: boolean, error?: string }}
+ */
+export function addSecretCard(game, level, text, type = 'truth') {
+  const cleanText = text.trim();
+  if (cleanText.length < 10) return { ok: false, error: 'Write at least 10 characters' };
+  if (cleanText.length > 300) return { ok: false, error: 'Max 300 characters' };
+
+  const storageKey = `ebt_secret_${game}_${level}`;
+  let existing = [];
+  try {
+    existing = JSON.parse(localStorage.getItem(storageKey) ?? '[]');
+  } catch {
+    existing = [];
+  }
+
+  const isDuplicate = existing.some((c) => c.text.toLowerCase() === cleanText.toLowerCase());
+  if (isDuplicate) {
+    return { ok: false, error: 'You already added this secret card!' };
+  }
+
+  const card = {
+    id: `secret_${Date.now()}`,
+    text: cleanText,
+    level,
+    type,
+    fromPartner: true,
+    tags: ['secret', 'custom'],
+  };
+
+  existing.push(card);
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(existing));
+  } catch {
+    /* ignore */
+  }
+
+  const key = `${game}|${level}`;
+  if (_decks[key]) {
+    _decks[key].cards.push(card);
+  }
+
+  return { ok: true };
 }
 
 /** Fisher-Yates shuffle (in-place, returns array) */

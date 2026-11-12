@@ -6,12 +6,12 @@
 
 /** @type {Record<string, number[]>} */
 const PATTERNS = {
-  tap:     [15],
+  tap: [15],
   success: [30, 20, 60],
-  skip:    [10, 15, 10],
-  veto:    [80],
-  flip:    [20],
-  win:     [50, 30, 50, 30, 100],
+  skip: [10, 15, 10],
+  veto: [80],
+  flip: [20],
+  win: [50, 30, 50, 30, 100],
 };
 
 /**
@@ -23,9 +23,7 @@ export function vibrate(pattern = 'tap') {
     if (typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function') {
       return;
     }
-    const sequence = Array.isArray(pattern)
-      ? pattern
-      : (PATTERNS[pattern] ?? PATTERNS.tap);
+    const sequence = Array.isArray(pattern) ? pattern : (PATTERNS[pattern] ?? PATTERNS.tap);
     navigator.vibrate(sequence);
   } catch (_err) {
     // Silently swallow — vibration is a progressive enhancement only.

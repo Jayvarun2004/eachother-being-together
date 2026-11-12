@@ -2,6 +2,16 @@
 -- supabase/schema.sql
 -- Eachother Being Together — Supabase schema
 --
+-- RLS & SECURITY MODEL:
+-- 1. Anonymous Access: Players sign in using anonymous Supabase Auth
+--    (auth.signInAnonymously()), obtaining a transient UUID in auth.uid().
+-- 2. Room Isolation: Only the authenticated players assigned to a room
+--    (player1_id or player2_id) can select or update room state.
+-- 3. Room Expiration: Inactive rooms are purged after 24h via expire_rooms().
+-- 4. Secret Answers Privacy: Direct SELECT on public.answers is blocked (USING (false)).
+--    Answers are revealed strictly server-side through get_answers_if_both_ready()
+--    ONLY when BOTH players in the room have submitted their responses.
+--
 -- HOW TO USE:
 -- 1. Go to https://supabase.com/dashboard/project/<your-ref>/sql
 -- 2. Click "New query"

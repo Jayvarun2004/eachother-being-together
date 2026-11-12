@@ -21,7 +21,7 @@ export function renderSetup() {
     'truth-or-dare': '🎲',
     'never-have-i-ever': '🙋',
     'would-you-rather': '🤔',
-    'who-is-most-likely': '🔮'
+    'who-is-most-likely': '🔮',
   };
 
   const presets = [
@@ -35,7 +35,7 @@ export function renderSetup() {
     { value: '__custom__', label: t('stakes.custom') },
   ];
 
-  const isPresetValue = presets.some(p => p.value !== '__custom__' && p.value === currentStake);
+  const isPresetValue = presets.some((p) => p.value !== '__custom__' && p.value === currentStake);
   const isCustom = !isPresetValue && currentStake !== 'None';
   let activePillValue = isCustom ? '__custom__' : currentStake;
 
@@ -76,11 +76,15 @@ export function renderSetup() {
         </div>
 
         <div class="stakes-pill-grid" id="stakes-pill-grid">
-          ${presets.map(p => `
+          ${presets
+            .map(
+              (p) => `
             <button type="button" class="stakes-pill ${activePillValue === p.value ? 'active' : ''}" data-stake="${p.value}">
               ${p.label}
             </button>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
 
         <div class="custom-stake-wrap ${isCustom ? 'visible' : ''}" id="custom-stake-wrap" style="margin-top: 0.75rem; display: ${isCustom ? 'block' : 'none'};">
@@ -92,8 +96,8 @@ export function renderSetup() {
         </div>
       </div>
 
-      <!-- Age gate — only shown for Spicy level -->
-      <div class="age-gate ${level === 'spicy' ? 'visible' : ''}" id="age-gate" aria-live="polite">
+      <!-- Age gate — only shown for Spicy or Mix level (mix eventually reaches spicy) -->
+      <div class="age-gate ${level === 'spicy' || level === 'mix' ? 'visible' : ''}" id="age-gate" aria-live="polite">
         <p class="age-gate-title">${t('ageGate.title')}</p>
         <p style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:.75rem">
           ${t('ageGate.warning')}
@@ -125,11 +129,11 @@ export function renderSetup() {
     if (lbl2) lbl2.textContent = t('ageGate.p2Check', { name: n2 });
   }
 
-  document.getElementById('setup-p1')?.addEventListener('input', e => {
+  document.getElementById('setup-p1')?.addEventListener('input', (e) => {
     state.set('player1', e.target.value || 'Player 1');
     updateAgeLabels();
   });
-  document.getElementById('setup-p2')?.addEventListener('input', e => {
+  document.getElementById('setup-p2')?.addEventListener('input', (e) => {
     state.set('player2', e.target.value || 'Player 2');
     updateAgeLabels();
   });
@@ -143,7 +147,7 @@ export function renderSetup() {
     const pill = e.target.closest('.stakes-pill');
     if (!pill) return;
 
-    pillGrid.querySelectorAll('.stakes-pill').forEach(btn => btn.classList.remove('active'));
+    pillGrid.querySelectorAll('.stakes-pill').forEach((btn) => btn.classList.remove('active'));
     pill.classList.add('active');
 
     const val = pill.dataset.stake;
@@ -166,11 +170,12 @@ export function renderSetup() {
   // Start game
   document.getElementById('btn-start')?.addEventListener('click', () => {
     // Validate spicy age gate
-    if (level === 'spicy') {
+    if (level === 'spicy' || level === 'mix') {
       const p1ok = document.getElementById('age-p1')?.checked;
       const p2ok = document.getElementById('age-p2')?.checked;
       if (!p1ok || !p2ok) {
-        toast('Both players must confirm they are 18+ for Spicy mode 🔞', 'warning');
+        const modeLabel = level === 'mix' ? 'Mix (reaches Spicy)' : 'Spicy';
+        toast(`Both players must confirm they are 18+ for ${modeLabel} mode 🔞`, 'warning');
         return;
       }
       state.set('spicyConfirmed', [true, true]);
@@ -195,5 +200,9 @@ export function renderSetup() {
 }
 
 function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }

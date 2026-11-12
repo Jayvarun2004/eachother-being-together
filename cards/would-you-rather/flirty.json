@@ -1,27 +1,327 @@
 [
-  { "id": "wyr-f-001", "optionA": "Go on 100 quick 15-minute dates", "optionB": "Go on 1 perfect all-day date", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-002", "optionA": "Always know what your partner is thinking", "optionB": "Always know exactly how your partner is feeling", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-003", "optionA": "Travel the world with your partner for a year", "optionB": "Build a perfect home together", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-004", "optionA": "Have your partner remember every anniversary", "optionB": "Have your partner plan every anniversary surprise", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-005", "optionA": "Get a handwritten love letter every week", "optionB": "Get one perfect handwritten love letter on the right day", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-006", "optionA": "Cook dinner for your partner every night", "optionB": "Have your partner cook for you every night", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-007", "optionA": "Always be the big spoon", "optionB": "Always be the little spoon", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-008", "optionA": "Go stargazing every month", "optionB": "Have a special restaurant you go to every month", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-009", "optionA": "Have your partner be your best friend", "optionB": "Have your best friend be your partner (they already are)", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-010", "optionA": "Relive your first date", "optionB": "Skip to your 10th anniversary and see what your life looks like", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-011", "optionA": "Dance together in the rain", "optionB": "Watch fireworks together from a rooftop", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-012", "optionA": "Know exactly when your partner fell in love with you", "optionB": "Know exactly what they love most about you", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-013", "optionA": "Have your partner write you a song", "optionB": "Have your partner paint your portrait", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-014", "optionA": "Spend a night in a luxury hotel", "optionB": "Spend a night in a cosy cabin with a fireplace", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-015", "optionA": "Always fall asleep first", "optionB": "Always be the last one awake watching your partner sleep", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-016", "optionA": "Go on a spontaneous adventure every month", "optionB": "Have one perfectly planned special date every month", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-017", "optionA": "Know every song that reminded your partner of you", "optionB": "Know every moment they thought of you", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-018", "optionA": "Have your partner remember every small thing you say", "optionB": "Have your partner forget every argument", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-019", "optionA": "Always make each other laugh", "optionB": "Always comfort each other perfectly", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-020", "optionA": "Be the one who plans the dates", "optionB": "Be the one who chooses the destination", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-021", "optionA": "Have your partner call you by a perfect nickname", "optionB": "Have your partner send you a good morning text every day", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-022", "optionA": "Go on a hot air balloon ride together", "optionB": "Take a train across a beautiful country together", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-023", "optionA": "Be the one who says 'I love you' first", "optionB": "Be the one who hears it first", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-024", "optionA": "Know exactly how your partner sees you", "optionB": "Know exactly how your partner wants to grow old with you", "level": "flirty", "tags": [] },
-  { "id": "wyr-f-025", "optionA": "Spend a perfect week doing absolutely nothing together", "optionB": "Spend a perfect week having a new adventure every day", "level": "flirty", "tags": [] }
+  {
+    "id": "wyr-f-001",
+    "optionA": "Go on 100 quick 15-minute dates",
+    "optionB": "Go on 1 perfect all-day date",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-002",
+    "optionA": "Always know what your partner is thinking",
+    "optionB": "Always know exactly how your partner is feeling",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-003",
+    "optionA": "Travel the world with your partner for a year",
+    "optionB": "Build a perfect home together",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-004",
+    "optionA": "Have your partner remember every anniversary",
+    "optionB": "Have your partner plan every anniversary surprise",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-005",
+    "optionA": "Get a handwritten love letter every week",
+    "optionB": "Get one perfect handwritten love letter on the right day",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-006",
+    "optionA": "Cook dinner for your partner every night",
+    "optionB": "Have your partner cook for you every night",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-007",
+    "optionA": "Always be the big spoon",
+    "optionB": "Always be the little spoon",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-008",
+    "optionA": "Go stargazing every month",
+    "optionB": "Have a special restaurant you go to every month",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-009",
+    "optionA": "Have your partner be your best friend",
+    "optionB": "Have your best friend be your partner (they already are)",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-010",
+    "optionA": "Relive your first date",
+    "optionB": "Skip to your 10th anniversary and see what your life looks like",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-011",
+    "optionA": "Dance together in the rain",
+    "optionB": "Watch fireworks together from a rooftop",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-012",
+    "optionA": "Know exactly when your partner fell in love with you",
+    "optionB": "Know exactly what they love most about you",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-013",
+    "optionA": "Have your partner write you a song",
+    "optionB": "Have your partner paint your portrait",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-014",
+    "optionA": "Spend a night in a luxury hotel",
+    "optionB": "Spend a night in a cosy cabin with a fireplace",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-015",
+    "optionA": "Always fall asleep first",
+    "optionB": "Always be the last one awake watching your partner sleep",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-016",
+    "optionA": "Go on a spontaneous adventure every month",
+    "optionB": "Have one perfectly planned special date every month",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-017",
+    "optionA": "Know every song that reminded your partner of you",
+    "optionB": "Know every moment they thought of you",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-018",
+    "optionA": "Have your partner remember every small thing you say",
+    "optionB": "Have your partner forget every argument",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-019",
+    "optionA": "Always make each other laugh",
+    "optionB": "Always comfort each other perfectly",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-020",
+    "optionA": "Be the one who plans the dates",
+    "optionB": "Be the one who chooses the destination",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-021",
+    "optionA": "Have your partner call you by a perfect nickname",
+    "optionB": "Have your partner send you a good morning text every day",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-022",
+    "optionA": "Go on a hot air balloon ride together",
+    "optionB": "Take a train across a beautiful country together",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-023",
+    "optionA": "Be the one who says 'I love you' first",
+    "optionB": "Be the one who hears it first",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-024",
+    "optionA": "Know exactly how your partner sees you",
+    "optionB": "Know exactly how your partner wants to grow old with you",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-025",
+    "optionA": "Spend a perfect week doing absolutely nothing together",
+    "optionB": "Spend a perfect week having a new adventure every day",
+    "level": "flirty",
+    "tags": []
+  },
+  {
+    "id": "wyr-f-026",
+    "level": "flirty",
+    "optionA": "Receive a heartfelt 3-page handwritten love letter",
+    "optionB": "Have your partner serenade you with an acoustic song"
+  },
+  {
+    "id": "wyr-f-027",
+    "level": "flirty",
+    "optionA": "Share a passionate kiss in the pouring rain",
+    "optionB": "Share a romantic slow dance on a moonlit rooftop"
+  },
+  {
+    "id": "wyr-f-028",
+    "level": "flirty",
+    "optionA": "Wake up wrapped tightly in your partner embrace",
+    "optionB": "Fall asleep with your partner fingers through your hair"
+  },
+  {
+    "id": "wyr-f-029",
+    "level": "flirty",
+    "optionA": "Have your partner plan an entire secret weekend trip",
+    "optionB": "Pack a suitcase together and pick a city at the airport"
+  },
+  {
+    "id": "wyr-f-030",
+    "level": "flirty",
+    "optionA": "Be told you are the most stunning person in the room",
+    "optionB": "Be told your mind and spirit are completely irreplaceable"
+  },
+  {
+    "id": "wyr-f-031",
+    "level": "flirty",
+    "optionA": "Spend an hour whispering sweet secrets under blankets",
+    "optionB": "Take a long romantic midnight walk holding hands"
+  },
+  {
+    "id": "wyr-f-032",
+    "level": "flirty",
+    "optionA": "Have your partner remember every detail of your outfit",
+    "optionB": "Have your partner remember every funny story you told"
+  },
+  {
+    "id": "wyr-f-033",
+    "level": "flirty",
+    "optionA": "Get a gentle kiss on your forehead every morning",
+    "optionB": "Get a tight warm hug from behind while making coffee"
+  },
+  {
+    "id": "wyr-f-034",
+    "level": "flirty",
+    "optionA": "Have your partner write a song or poem about you",
+    "optionB": "Have your partner frame their favorite candid photo of you"
+  },
+  {
+    "id": "wyr-f-035",
+    "level": "flirty",
+    "optionA": "Steal kisses at a crowded party across the room",
+    "optionB": "Slip away early together to share dessert in privacy"
+  },
+  {
+    "id": "wyr-f-036",
+    "level": "flirty",
+    "optionA": "Have a partner who always makes you laugh until you cry",
+    "optionB": "Have a partner who always makes you feel deeply heard"
+  },
+  {
+    "id": "wyr-f-037",
+    "level": "flirty",
+    "optionA": "Spend an evening looking through all our old photos",
+    "optionB": "Spend an evening making vision boards of our future together"
+  },
+  {
+    "id": "wyr-f-038",
+    "level": "flirty",
+    "optionA": "Have breakfast in bed served with freshly cut roses",
+    "optionB": "Have candlelit wine and chocolate fondue at midnight"
+  },
+  {
+    "id": "wyr-f-039",
+    "level": "flirty",
+    "optionA": "Hold hands everywhere you go in public",
+    "optionB": "Have a secret wink and glance that only you two understand"
+  },
+  {
+    "id": "wyr-f-040",
+    "level": "flirty",
+    "optionA": "Get a surprise romantic massage after a hard day",
+    "optionB": "Get a warm bubble bath prepared with candles waiting"
+  },
+  {
+    "id": "wyr-f-041",
+    "level": "flirty",
+    "optionA": "Hear your partner say what made them fall in love with you",
+    "optionB": "Hear your partner describe what they love about you today"
+  },
+  {
+    "id": "wyr-f-042",
+    "level": "flirty",
+    "optionA": "Have an intimate candlelit dinner on the beach",
+    "optionB": "Have a luxurious picnic in a sunlit vineyard"
+  },
+  {
+    "id": "wyr-f-043",
+    "level": "flirty",
+    "optionA": "Spend an hour softly brushing each other hair",
+    "optionB": "Spend an hour tracing constellations on each other skin"
+  },
+  {
+    "id": "wyr-f-044",
+    "level": "flirty",
+    "optionA": "Have your partner surprise you at work with lunch",
+    "optionB": "Have your partner leave sweet sticky notes in your bag"
+  },
+  {
+    "id": "wyr-f-045",
+    "level": "flirty",
+    "optionA": "Be kissed softly with eyes closed and deep focus",
+    "optionB": "Be kissed passionately while maintaining intense eye contact"
+  },
+  {
+    "id": "wyr-f-046",
+    "level": "flirty",
+    "optionA": "Have your partner wear your favorite cologne or scent",
+    "optionB": "Have your partner wear the shirt you find most attractive"
+  },
+  {
+    "id": "wyr-f-047",
+    "level": "flirty",
+    "optionA": "Share a long dessert with one spoon at a quaint bistro",
+    "optionB": "Split a vintage milkshake with two straws like an old movie"
+  },
+  {
+    "id": "wyr-f-048",
+    "level": "flirty",
+    "optionA": "Have your partner whisper how much they adore you in public",
+    "optionB": "Have your partner squeeze your hand three times for \"I love you\""
+  },
+  {
+    "id": "wyr-f-049",
+    "level": "flirty",
+    "optionA": "Take an impromptu couples photoshoot together",
+    "optionB": "Take silly photo booth strips in a vintage cinema lobby"
+  },
+  {
+    "id": "wyr-f-050",
+    "level": "flirty",
+    "optionA": "Spend an entire weekend without leaving each other side",
+    "optionB": "Have an intense reunion after a brief couple days apart"
+  }
 ]

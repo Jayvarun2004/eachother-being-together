@@ -1,0 +1,182 @@
+[
+  {
+    "id": "tot-w-001",
+    "optionA": "Early Morning Person",
+    "optionB": "Late Night Owl",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-002",
+    "optionA": "Sweet Dessert Lover",
+    "optionB": "Savory Snack Lover",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-003",
+    "optionA": "Beach Vacation",
+    "optionB": "Mountain Getaway",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-004",
+    "optionA": "Cooking at Home",
+    "optionB": "Dining Out at Bistro",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-005",
+    "optionA": "Dogs as Pets",
+    "optionB": "Cats as Pets",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-006",
+    "optionA": "Action & Sci-Fi Movies",
+    "optionB": "Comedy & Drama Movies",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-007",
+    "optionA": "Road Trip by Car",
+    "optionB": "Flying by Plane",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-008",
+    "optionA": "Hot Coffee in Morning",
+    "optionB": "Iced Tea in Afternoon",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-009",
+    "optionA": "Board Games Night",
+    "optionB": "Video Games Night",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-010",
+    "optionA": "Amusement Park Coasters",
+    "optionB": "Tranquil Waterpark Lazy River",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-011",
+    "optionA": "Cozy Winter Snow",
+    "optionB": "Warm Summer Sun",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-012",
+    "optionA": "City Penthouse",
+    "optionB": "Country Farmhouse",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-013",
+    "optionA": "Reading a Good Book",
+    "optionB": "Listening to a Podcast",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-014",
+    "optionA": "Spontaneous Adventures",
+    "optionB": "Carefully Planned Itinerary",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-015",
+    "optionA": "Big Lively Party",
+    "optionB": "Intimate Dinner with Close Friends",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-016",
+    "optionA": "Watching Sunrises",
+    "optionB": "Watching Sunsets",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-017",
+    "optionA": "Handwritten Letters",
+    "optionB": "Long Voice Notes",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-018",
+    "optionA": "Camping in a Tent",
+    "optionB": "Glamping in a Cabin",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-019",
+    "optionA": "Breakfast for Dinner",
+    "optionB": "Leftovers for Breakfast",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-020",
+    "optionA": "Live Concert in Stadium",
+    "optionB": "Acoustic Set in Small Lounge",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-021",
+    "optionA": "Crisp Autumn Leaves",
+    "optionB": "Blooming Spring Flowers",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-022",
+    "optionA": "Sweet Milk Chocolate",
+    "optionB": "Rich Dark Chocolate",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-023",
+    "optionA": "Physical Paper Books",
+    "optionB": "Convenient E-Reader",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-024",
+    "optionA": "Theme Park Fun",
+    "optionB": "Museum & Art Gallery Walk",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-025",
+    "optionA": "Baking Fresh Cookies",
+    "optionB": "Grilling Savory BBQ",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-026",
+    "optionA": "Sleeping with Window Open",
+    "optionB": "Sleeping with AC on Full",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-027",
+    "optionA": "Pancake Breakfast",
+    "optionB": "Waffle Breakfast",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-028",
+    "optionA": "Cozy Cardigan Sweater",
+    "optionB": "Comfy Oversized Hoodie",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-029",
+    "optionA": "Singing Aloud in Car",
+    "optionB": "Quiet Scenic Drive",
+    "level": "wholesome"
+  },
+  {
+    "id": "tot-w-030",
+    "optionA": "Watching Old Cartoons",
+    "optionB": "Watching True Crime Docs",
+    "level": "wholesome"
+  }
+]

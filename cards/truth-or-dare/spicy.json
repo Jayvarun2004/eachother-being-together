@@ -1,52 +1,677 @@
 [
-  { "id": "tod-s-t-001", "text": "What's the most spontaneous romantic thing you've ever done?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-002", "text": "What's your idea of the perfect romantic evening in?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-003", "text": "Have you ever been instantly attracted to someone you just met?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-004", "text": "What's the most flirtatious text you've ever sent?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-005", "text": "What's something you find attractive that most people wouldn't expect?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-006", "text": "What's the most daring thing you've done to impress someone?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-007", "text": "What's your biggest romantic regret?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-008", "text": "Have you ever kept a crush secret for more than a year?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-009", "text": "What's the most romantic setting you can imagine for us?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-010", "text": "What's something you've always been curious to try together?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-011", "text": "What's the first thing you notice when you're attracted to someone?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-012", "text": "What's something your partner does that you find secretly irresistible?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-013", "text": "What's your favourite thing about being in an intimate relationship?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-014", "text": "What's a romantic scenario you've thought about for us?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-015", "text": "What's something you want to do with me that you've been too shy to say?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-016", "text": "What's the most romantic dream you've had about someone?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-017", "text": "What scent, sound, or texture do you find most attractive?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-018", "text": "What's the most romantic thing on your bucket list for us?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-019", "text": "What's something your partner does that makes you feel irresistible?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-020", "text": "Have you ever flirted with someone without meaning to? What happened?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-021", "text": "What's one thing you wish we did more of together?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-022", "text": "What's your ideal ratio of adventure to romance in a relationship?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-023", "text": "What's something you've always wanted to confess to your partner?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-024", "text": "What's the most memorable compliment you've given or received?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-t-025", "text": "If we had a whole weekend with no plans and no one else around, what would you want to do?", "type": "truth", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-001", "text": "Give your partner a 2-minute foot massage", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-002", "text": "Stare into your partner's eyes without blinking as long as you can", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-003", "text": "Whisper something you've always wanted to say but haven't", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-004", "text": "Give your partner three kisses on three places they choose", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-005", "text": "Play 20 seconds of your most romantic playlist and dance", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-006", "text": "Feed your partner a snack as romantically as possible", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-007", "text": "Describe, in vivid detail, your ideal romantic night with your partner", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-008", "text": "Let your partner draw on your arm with a pen", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-009", "text": "Take a selfie together that captures how you really feel about each other", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-010", "text": "Tell your partner exactly what you find irresistible about them right now", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-011", "text": "Give your partner your most convincing 'come hither' look", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-012", "text": "Whisper three things you love about how your partner looks today", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-013", "text": "Let your partner style your hair however they want", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-014", "text": "Re-enact your most romantic movie scene together", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-015", "text": "Describe your partner in one word for every letter of the alphabet", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-016", "text": "Tell your partner your most romantic fantasy for a future trip together", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-017", "text": "Let your partner ask you any one question and answer it completely honestly", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-018", "text": "Give your partner a compliment about something they're usually insecure about", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-019", "text": "Do your most dramatic romantic movie kiss", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-020", "text": "Write a flirty note to your partner and read it aloud", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-021", "text": "Let your partner give you a 90-second back massage", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-022", "text": "Tell your partner the exact words you'd use to describe them to someone who's never met them", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-023", "text": "Create a 30-second romantic ad 'featuring' your partner", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-024", "text": "Tell your partner one thing you've never said in this relationship", "type": "dare", "level": "spicy", "tags": ["spicy"] },
-  { "id": "tod-s-d-025", "text": "Look your partner in the eye and say 'I choose you' — then explain why", "type": "dare", "level": "spicy", "tags": ["spicy"] }
+  {
+    "id": "tod-s-t-001",
+    "text": "What's the most spontaneous romantic thing you've ever done?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-002",
+    "text": "What's your idea of the perfect romantic evening in?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-003",
+    "text": "Have you ever been instantly attracted to someone you just met?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-004",
+    "text": "What's the most flirtatious text you've ever sent?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-005",
+    "text": "What's something you find attractive that most people wouldn't expect?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-006",
+    "text": "What's the most daring thing you've done to impress someone?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-007",
+    "text": "What's your biggest romantic regret?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-008",
+    "text": "Have you ever kept a crush secret for more than a year?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-009",
+    "text": "What's the most romantic setting you can imagine for us?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-010",
+    "text": "What's something you've always been curious to try together?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-011",
+    "text": "What's the first thing you notice when you're attracted to someone?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-012",
+    "text": "What's something your partner does that you find secretly irresistible?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-013",
+    "text": "What's your favourite thing about being in an intimate relationship?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-014",
+    "text": "What's a romantic scenario you've thought about for us?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-015",
+    "text": "What's something you want to do with me that you've been too shy to say?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-016",
+    "text": "What's the most romantic dream you've had about someone?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-017",
+    "text": "What scent, sound, or texture do you find most attractive?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-018",
+    "text": "What's the most romantic thing on your bucket list for us?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-019",
+    "text": "What's something your partner does that makes you feel irresistible?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-020",
+    "text": "Have you ever flirted with someone without meaning to? What happened?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-021",
+    "text": "What's one thing you wish we did more of together?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-022",
+    "text": "What's your ideal ratio of adventure to romance in a relationship?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-023",
+    "text": "What's something you've always wanted to confess to your partner?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-024",
+    "text": "What's the most memorable compliment you've given or received?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-t-025",
+    "text": "If we had a whole weekend with no plans and no one else around, what would you want to do?",
+    "type": "truth",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-001",
+    "text": "Give your partner a 2-minute foot massage",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-002",
+    "text": "Stare into your partner's eyes without blinking as long as you can",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-003",
+    "text": "Whisper something you've always wanted to say but haven't",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-004",
+    "text": "Give your partner three kisses on three places they choose",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-005",
+    "text": "Play 20 seconds of your most romantic playlist and dance",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-006",
+    "text": "Feed your partner a snack as romantically as possible",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-007",
+    "text": "Describe, in vivid detail, your ideal romantic night with your partner",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-008",
+    "text": "Let your partner draw on your arm with a pen",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-009",
+    "text": "Take a selfie together that captures how you really feel about each other",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-010",
+    "text": "Tell your partner exactly what you find irresistible about them right now",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-011",
+    "text": "Give your partner your most convincing 'come hither' look",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-012",
+    "text": "Whisper three things you love about how your partner looks today",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-013",
+    "text": "Let your partner style your hair however they want",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-014",
+    "text": "Re-enact your most romantic movie scene together",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-015",
+    "text": "Describe your partner in one word for every letter of the alphabet",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-016",
+    "text": "Tell your partner your most romantic fantasy for a future trip together",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-017",
+    "text": "Let your partner ask you any one question and answer it completely honestly",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-018",
+    "text": "Give your partner a compliment about something they're usually insecure about",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-019",
+    "text": "Do your most dramatic romantic movie kiss",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-020",
+    "text": "Write a flirty note to your partner and read it aloud",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-021",
+    "text": "Let your partner give you a 90-second back massage",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-022",
+    "text": "Tell your partner the exact words you'd use to describe them to someone who's never met them",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-023",
+    "text": "Create a 30-second romantic ad 'featuring' your partner",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-024",
+    "text": "Tell your partner one thing you've never said in this relationship",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-d-025",
+    "text": "Look your partner in the eye and say 'I choose you' — then explain why",
+    "type": "dare",
+    "level": "spicy",
+    "tags": [
+      "spicy"
+    ]
+  },
+  {
+    "id": "tod-s-051",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What's a secret thought about me that made your heart race recently?",
+    "tags": [
+      "heat"
+    ]
+  },
+  {
+    "id": "tod-s-052",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Whisper in my ear the exact romantic thing you want to do once this game ends.",
+    "tags": [
+      "whisper"
+    ]
+  },
+  {
+    "id": "tod-s-053",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What was the most electrifying moment of physical tension between us?",
+    "tags": [
+      "tension"
+    ]
+  },
+  {
+    "id": "tod-s-054",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Trace a slow line from my jawline down to my collarbone with your fingertip.",
+    "tags": [
+      "touch"
+    ]
+  },
+  {
+    "id": "tod-s-055",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What's a private romantic fantasy location where you'd love for us to be alone?",
+    "tags": [
+      "fantasy"
+    ]
+  },
+  {
+    "id": "tod-s-056",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Give me a slow, passionate kiss that lasts at least 15 uninterrupted seconds.",
+    "tags": [
+      "kiss"
+    ]
+  },
+  {
+    "id": "tod-s-057",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What's something I do naturally that drives you wild without me realizing it?",
+    "tags": [
+      "allure"
+    ]
+  },
+  {
+    "id": "tod-s-058",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Unbutton or adjust one item of your clothing while keeping unwavering eye contact.",
+    "tags": [
+      "tease"
+    ]
+  },
+  {
+    "id": "tod-s-059",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What's the most thrilling thing about the way our bodies fit together?",
+    "tags": [
+      "closeness"
+    ]
+  },
+  {
+    "id": "tod-s-060",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Give me a relaxing 60-second neck and shoulder massage with your warm hands.",
+    "tags": [
+      "massage"
+    ]
+  },
+  {
+    "id": "tod-s-061",
+    "level": "spicy",
+    "type": "truth",
+    "text": "When was the last time you saw me and felt an immediate surge of desire?",
+    "tags": [
+      "desire"
+    ]
+  },
+  {
+    "id": "tod-s-062",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Kiss 3 different spots on my neck, each slower and softer than the last.",
+    "tags": [
+      "kisses"
+    ]
+  },
+  {
+    "id": "tod-s-063",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What is your favorite memory of us being completely alone behind closed doors?",
+    "tags": [
+      "memory"
+    ]
+  },
+  {
+    "id": "tod-s-064",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Bite your lower lip and tell me the one thing you crave most from me tonight.",
+    "tags": [
+      "tease"
+    ]
+  },
+  {
+    "id": "tod-s-065",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What is an outfit or style of mine that you find irresistibly magnetic?",
+    "tags": [
+      "outfit"
+    ]
+  },
+  {
+    "id": "tod-s-066",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Trace the outline of my lips gently with your thumb while looking into my eyes.",
+    "tags": [
+      "intimacy"
+    ]
+  },
+  {
+    "id": "tod-s-067",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What's a private adventure you want to try together where nobody can interrupt us?",
+    "tags": [
+      "adventure"
+    ]
+  },
+  {
+    "id": "tod-s-068",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Describe in vivid sensual detail how you would spend 24 uninterrupted hours with me.",
+    "tags": [
+      "story"
+    ]
+  },
+  {
+    "id": "tod-s-069",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What is your favorite physical touch of mine when we are settling down in bed?",
+    "tags": [
+      "bedtime"
+    ]
+  },
+  {
+    "id": "tod-s-070",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Lean in until our lips are half an inch apart for 10 seconds before finally kissing me.",
+    "tags": [
+      "tension"
+    ]
+  },
+  {
+    "id": "tod-s-071",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What's a spicy compliment you've wanted to give me but were too shy to say?",
+    "tags": [
+      "compliment"
+    ]
+  },
+  {
+    "id": "tod-s-072",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Whisper your deepest, most honest wish for our intimacy in my left ear.",
+    "tags": [
+      "whisper"
+    ]
+  },
+  {
+    "id": "tod-s-073",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What is the most passionate kiss we have ever shared in your memory?",
+    "tags": [
+      "kiss"
+    ]
+  },
+  {
+    "id": "tod-s-074",
+    "level": "spicy",
+    "type": "dare",
+    "text": "Let me run my fingers slowly through your hair while you close your eyes.",
+    "tags": [
+      "touch"
+    ]
+  },
+  {
+    "id": "tod-s-075",
+    "level": "spicy",
+    "type": "truth",
+    "text": "What makes you feel most safe, cherished, and deeply wanted by me?",
+    "tags": [
+      "vulnerability"
+    ]
+  }
 ]

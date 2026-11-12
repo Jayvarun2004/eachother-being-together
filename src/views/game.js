@@ -12,13 +12,20 @@
 import { t } from '../lib/i18n.js';
 import { state } from '../lib/state.js';
 import { navigate } from '../lib/router.js';
-import { drawCard, deckProgress, addCustomCard } from '../lib/deck.js';
+import { drawCard, deckProgress, addCustomCard, addSecretCard } from '../lib/deck.js';
 import { sounds, speakCardText } from '../lib/sound.js';
 import { toast } from '../lib/toast.js';
 import { fireConfetti } from '../lib/confetti.js';
-import { generateAICard, modifyCardWithAI, getApiKey, setApiKey, checkOllamaAvailable } from '../lib/ai.js';
+import {
+  generateAICard,
+  modifyCardWithAI,
+  getApiKey,
+  setApiKey,
+  checkOllamaAvailable,
+} from '../lib/ai.js';
 import { vibrate } from '../lib/haptic.js';
 import { saveToVault, isVaulted, removeFromVault } from '../lib/vault.js';
+import { updateStats } from '../lib/stats.js';
 
 // --- Game module registry ---
 // Each module exports: { renderCardContent(card, el), onReveal(card, el), onDone() }
@@ -26,12 +33,18 @@ import { TruthOrDareGame } from '../../games/truth-or-dare/index.js';
 import { NeverHaveIEverGame } from '../../games/never-have-i-ever/index.js';
 import { WouldYouRatherGame } from '../../games/would-you-rather/index.js';
 import { WhoIsMostLikelyGame } from '../../games/who-is-most-likely/index.js';
+import { FinishTheSentenceGame } from '../../games/finish-the-sentence/index.js';
+import { ThisOrThatGame } from '../../games/this-or-that/index.js';
+import { HowWellDoYouKnowMeGame } from '../../games/how-well-do-you-know-me/index.js';
 
 const GAME_MODULES = {
-  'truth-or-dare':     TruthOrDareGame,
+  'truth-or-dare': TruthOrDareGame,
   'never-have-i-ever': NeverHaveIEverGame,
-  'would-you-rather':  WouldYouRatherGame,
+  'would-you-rather': WouldYouRatherGame,
   'who-is-most-likely': WhoIsMostLikelyGame,
+  'finish-the-sentence': FinishTheSentenceGame,
+  'this-or-that': ThisOrThatGame,
+  'how-well-do-you-know-me': HowWellDoYouKnowMeGame,
 };
 
 // --- State for this session ---
@@ -40,8 +53,8 @@ let _flipped = false;
 let _gameModule = null;
 let _game = null;
 let _level = null;
-let _cardsThisSession = 0;   // for Heat Escalator
-let _baseLevel = null;       // original level chosen at setup
+let _cardsThisSession = 0; // for Heat Escalator
+let _baseLevel = null; // original level chosen at setup
 
 export async function renderGame(game) {
   _game = game;
@@ -97,12 +110,16 @@ export async function renderGame(game) {
       </div>
 
       <!-- Active Stake Banner -->
-      ${activeStake && activeStake !== 'None' ? `
+      ${
+        activeStake && activeStake !== 'None'
+          ? `
         <div class="active-stake-banner" id="active-stake-banner" title="Tonight's Stakes">
           <span class="stake-badge-icon">🎯</span>
           <span class="stake-badge-text"><strong>${t('stakes.badgeLabel')}:</strong> ${escHtml(activeStake)}</span>
         </div>
-      ` : ''}
+      `
+          : ''
+      }
 
       <!-- The flip card -->
       <div class="card-area">
@@ -132,6 +149,9 @@ export async function renderGame(game) {
           ${t('game.btnVeto', { n: state.get('vetosLeft')?.[state.get('currentTurn')] ?? 1 })}
         </button>
       </div>
+
+      <!-- Dare Timer Area -->
+      <div id="dare-timer-area" style="display:none;"></div>
 
       <div class="action-counts" id="action-counts"></div>
 
@@ -178,18 +198,38 @@ export async function renderGame(game) {
         </div>
       </div>
 
-      <!-- Add your own card -->
-      <button class="btn btn-ghost btn-sm w-full" id="btn-add-card" style="margin-bottom:.5rem">
-        ${t('game.btnAddCard')}
-      </button>
+      <!-- Add your own card / secret card -->
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">
+        <button class="btn btn-ghost btn-sm" id="btn-add-card" style="flex:1;">
+          ${t('game.btnAddCard')}
+        </button>
+        <button class="btn btn-ghost btn-sm" id="btn-add-secret-card" style="flex:1;border-color:var(--color-rose);">
+          🤫 Secret Card
+        </button>
+      </div>
       <button class="btn btn-ghost btn-sm w-full" id="btn-vault-save" style="margin-bottom:.25rem;display:none">
         💌 Save to Love Vault
       </button>
+
       <div class="add-card-form" id="add-card-form">
         <textarea id="custom-card-text" placeholder="${t('game.addCardPlaceholder')}" rows="3"></textarea>
         <div style="display:flex;gap:.5rem;margin-top:.5rem">
           <button class="btn btn-primary btn-sm" id="btn-save-card">${t('game.btnSaveCard')}</button>
           <button class="btn btn-ghost btn-sm" id="btn-cancel-card">${t('game.btnCancelCard')}</button>
+        </div>
+      </div>
+
+      <div class="add-card-form" id="add-secret-form" style="display:none;border-color:var(--color-rose);background:rgba(196,85,106,0.06);">
+        <div style="font-size:var(--text-xs);font-weight:700;color:var(--color-rose);margin-bottom:0.25rem;">
+          🤫 Secret Card for Your Partner
+        </div>
+        <p style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:0.5rem;">
+          Your partner won't see this now! It will slip into the deck secretly with a "from your partner 💌" label.
+        </p>
+        <textarea id="secret-card-text" placeholder="Write something sweet, spicy, or provocative (10-300 chars)..." rows="3" maxlength="300"></textarea>
+        <div style="display:flex;gap:.5rem;margin-top:.5rem">
+          <button class="btn btn-primary btn-sm" id="btn-save-secret">Save Secret Card</button>
+          <button class="btn btn-ghost btn-sm" id="btn-cancel-secret">Cancel</button>
         </div>
       </div>
     </div>
@@ -204,7 +244,9 @@ export async function renderGame(game) {
   // Flip card
   const flipCard = document.getElementById('flip-card');
   flipCard?.addEventListener('click', handleFlip);
-  flipCard?.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') handleFlip(); });
+  flipCard?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') handleFlip();
+  });
 
   // Action buttons
   document.getElementById('btn-done')?.addEventListener('click', handleDone);
@@ -237,18 +279,47 @@ export async function renderGame(game) {
   });
   document.getElementById('btn-save-card')?.addEventListener('click', () => {
     const text = document.getElementById('custom-card-text')?.value?.trim();
-    if (!text || text.length < 5) { toast('Write a bit more!', 'warning'); return; }
+    if (!text || text.length < 5) {
+      toast('Write a bit more!', 'warning');
+      return;
+    }
     addCustomCard(_game, _level, text);
     toast(t('game.customCardAdded'), 'success');
     document.getElementById('custom-card-text').value = '';
     document.getElementById('add-card-form')?.classList.remove('visible');
   });
 
+  // Add secret card form
+  document.getElementById('btn-add-secret-card')?.addEventListener('click', () => {
+    const form = document.getElementById('add-secret-form');
+    if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  });
+  document.getElementById('btn-cancel-secret')?.addEventListener('click', () => {
+    const form = document.getElementById('add-secret-form');
+    if (form) form.style.display = 'none';
+  });
+  document.getElementById('btn-save-secret')?.addEventListener('click', () => {
+    const text = document.getElementById('secret-card-text')?.value?.trim();
+    if (!text || text.length < 10) {
+      toast('Please write at least 10 characters', 'warning');
+      return;
+    }
+    const res = addSecretCard(_game, _level, text, _currentCard?.type ?? 'truth');
+    if (!res.ok) {
+      toast(res.error, 'warning');
+      return;
+    }
+    toast('Secret card added! Your partner will encounter it soon 💌', 'success');
+    document.getElementById('secret-card-text').value = '';
+    const form = document.getElementById('add-secret-form');
+    if (form) form.style.display = 'none';
+  });
+
   // Wire AI controls
   const aiKeyInput = document.getElementById('ai-key-input');
   if (aiKeyInput) aiKeyInput.value = getApiKey();
 
-  checkOllamaAvailable().then(model => {
+  checkOllamaAvailable().then((model) => {
     const badge = document.getElementById('ai-status-badge');
     if (badge && model) {
       badge.textContent = `⚡ OLLAMA (${model.toUpperCase()}) ACTIVE`;
@@ -332,8 +403,92 @@ function applyCard(card) {
   }
 }
 
+let _dareTimerInterval = null;
+let _dareTimerSeconds = 0;
+
+function startDareTimer(seconds) {
+  stopDareTimer();
+  _dareTimerSeconds = seconds;
+  const wrap = document.getElementById('dare-timer-area');
+  if (!wrap) return;
+  wrap.style.display = 'block';
+  wrap.innerHTML = `
+    <div class="glass-card" style="padding:0.75rem;text-align:center;margin:0.5rem 0;border-color:var(--color-rose);background:rgba(196,85,106,0.08);">
+      <div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:0.25rem;">⏱️ Dare Timer</div>
+      <div id="dare-timer-num" style="font-size:2.25rem;font-weight:900;color:var(--color-rose);line-height:1;">
+        ${_dareTimerSeconds}s
+      </div>
+      <button class="btn btn-ghost btn-sm" id="btn-cancel-timer" style="margin-top:0.35rem;font-size:var(--text-xs);">✕ Stop Timer</button>
+    </div>
+  `;
+  document.getElementById('btn-cancel-timer')?.addEventListener('click', stopDareTimer);
+
+  _dareTimerInterval = setInterval(() => {
+    _dareTimerSeconds--;
+    const numEl = document.getElementById('dare-timer-num');
+    if (numEl) numEl.textContent = `${_dareTimerSeconds}s`;
+
+    if (_dareTimerSeconds <= 0) {
+      stopDareTimer();
+      sounds.reveal();
+      vibrate('success');
+      toast('⏰ Time\'s up! 🎉', 'success', 3500);
+      if (numEl) numEl.textContent = '⏰ Time\'s up!';
+    }
+  }, 1000);
+}
+
+function stopDareTimer() {
+  if (_dareTimerInterval) {
+    clearInterval(_dareTimerInterval);
+    _dareTimerInterval = null;
+  }
+  const wrap = document.getElementById('dare-timer-area');
+  if (wrap) {
+    wrap.innerHTML = '';
+    wrap.style.display = 'none';
+  }
+}
+
+function showHandoverScreen(nextPlayerName, onReady) {
+  const overlay = document.createElement('div');
+  overlay.className = 'handover-overlay active animate-fade-in';
+  overlay.style.cssText =
+    'position:fixed;inset:0;background:rgba(13,10,18,0.96);backdrop-filter:blur(10px);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;';
+  overlay.innerHTML = `
+    <div class="glass-card animate-scale-up" style="padding:2.25rem 1.75rem;max-width:320px;border-color:var(--color-rose);text-align:center;">
+      <div style="font-size:3.5rem;margin-bottom:0.75rem;">📱💕</div>
+      <h2 style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:0.35rem;">
+        Pass the phone to
+      </h2>
+      <div style="font-size:var(--text-2xl);font-weight:900;color:var(--color-rose);margin-bottom:0.75rem;font-family:var(--font-display);">
+        ${escHtml(nextPlayerName)}
+      </div>
+      <p style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:1.5rem;line-height:1.4;">
+        No peeking! Tap below once you have the phone.
+      </p>
+      <button class="btn btn-primary w-full" id="btn-handover-confirm" style="font-size:var(--text-base);padding:0.75rem 1.5rem;">
+        I'm Ready! 💖
+      </button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#btn-handover-confirm')?.addEventListener('click', () => {
+    overlay.remove();
+    onReady();
+  });
+}
+
 async function loadNextCard() {
   _flipped = false;
+  stopDareTimer();
+
+  if (_baseLevel === 'mix') {
+    if (_cardsThisSession >= 10) _level = 'spicy';
+    else if (_cardsThisSession >= 5) _level = 'flirty';
+    else _level = 'wholesome';
+  }
+
   _currentCard = await drawCard(_game, _level);
 
   const flipCard = document.getElementById('flip-card');
@@ -345,6 +500,13 @@ async function loadNextCard() {
   // Hide vault button until flipped
   const vaultBtn = document.getElementById('btn-vault-save');
   if (vaultBtn) vaultBtn.style.display = 'none';
+
+  // Hide dare timer
+  const timerArea = document.getElementById('dare-timer-area');
+  if (timerArea) {
+    timerArea.style.display = 'none';
+    timerArea.innerHTML = '';
+  }
 
   // Update front face with game icon
   updateFrontFace();
@@ -362,6 +524,15 @@ async function loadNextCard() {
   if (_currentCard && _gameModule) {
     const backFace = document.getElementById('card-back-face');
     _gameModule.renderCardContent(_currentCard, backFace);
+
+    if (_currentCard.fromPartner) {
+      const pNote = document.createElement('div');
+      pNote.className = 'from-partner-label';
+      pNote.style.cssText =
+        'text-align:center;font-size:var(--text-xs);font-weight:700;color:var(--color-rose);margin-top:0.5rem;';
+      pNote.innerHTML = '💌 from your partner';
+      backFace.appendChild(pNote);
+    }
   }
 }
 
@@ -379,6 +550,25 @@ async function handleFlip() {
   if (_game === 'truth-or-dare') {
     document.getElementById('card-actions').style.display = 'flex';
     updateActionCounts();
+
+    if (_currentCard.type === 'dare') {
+      const timerArea = document.getElementById('dare-timer-area');
+      if (timerArea) {
+        timerArea.style.display = 'block';
+        timerArea.innerHTML = `
+          <div style="display:flex;gap:0.5rem;justify-content:center;margin:0.5rem 0;">
+            <button class="btn btn-ghost btn-sm" id="btn-timer-30">⏱️ 30s Timer</button>
+            <button class="btn btn-ghost btn-sm" id="btn-timer-60">⏱️ 60s Timer</button>
+          </div>
+        `;
+        document
+          .getElementById('btn-timer-30')
+          ?.addEventListener('click', () => startDareTimer(30));
+        document
+          .getElementById('btn-timer-60')
+          ?.addEventListener('click', () => startDareTimer(60));
+      }
+    }
   }
 
   // Show Vault save button
@@ -401,6 +591,7 @@ async function handleFlip() {
 
 async function handleDone() {
   if (!_flipped) return;
+  stopDareTimer();
   sounds.done();
   vibrate('success');
 
@@ -413,6 +604,9 @@ async function handleDone() {
   _cardsThisSession++;
   state.set('cardsPlayed', (state.get('cardsPlayed') ?? 0) + 1);
 
+  // Update couple stats
+  updateStats({ daresCompleted: _currentCard?.type === 'dare' ? 1 : 0 });
+
   // Heat Escalator — escalate every 5 cards in Spicy base level
   checkHeatEscalator();
 
@@ -424,7 +618,14 @@ async function handleDone() {
 
   // Switch turn and load next
   switchTurn();
-  await loadNextCard();
+  if (state.get('mode') === 'local') {
+    const nextPlayer = state.get('currentTurn') === 0 ? state.get('player1') : state.get('player2');
+    showHandoverScreen(nextPlayer, async () => {
+      await loadNextCard();
+    });
+  } else {
+    await loadNextCard();
+  }
 }
 
 async function handleSkip() {
@@ -436,6 +637,7 @@ async function handleSkip() {
     return;
   }
 
+  stopDareTimer();
   sounds.skip();
   vibrate('skip');
   skipsLeft[turn]--;
@@ -447,7 +649,14 @@ async function handleSkip() {
   state.set('cardsPlayed', (state.get('cardsPlayed') ?? 0) + 1);
 
   switchTurn();
-  await loadNextCard();
+  if (state.get('mode') === 'local') {
+    const nextPlayer = state.get('currentTurn') === 0 ? state.get('player1') : state.get('player2');
+    showHandoverScreen(nextPlayer, async () => {
+      await loadNextCard();
+    });
+  } else {
+    await loadNextCard();
+  }
 }
 
 async function handleVeto() {
@@ -479,8 +688,21 @@ function switchTurn() {
   state.set('currentTurn', turn === 0 ? 1 : 0);
 }
 
-/** Heat Escalator — in Spicy mode, escalate level every 5 cards */
+/** Heat Escalator — in Spicy mode or Mix mode, escalate level as game progresses */
 function checkHeatEscalator() {
+  if (_baseLevel === 'mix') {
+    let nextLevel = 'wholesome';
+    if (_cardsThisSession >= 10) nextLevel = 'spicy';
+    else if (_cardsThisSession >= 5) nextLevel = 'flirty';
+
+    if (nextLevel !== _level) {
+      _level = nextLevel;
+      const labels = { wholesome: '🌸 Wholesome', flirty: '💋 Flirty', spicy: '🔥 Spicy' };
+      toast(`🎲 Mix it up: escalating to ${labels[nextLevel]}!`, 'info', 2500);
+    }
+    return;
+  }
+
   if (_baseLevel !== 'spicy') return; // only escalates from spicy base
   const levels = ['wholesome', 'flirty', 'spicy'];
   const milestones = [5, 10, 15]; // escalate at these card counts
@@ -526,7 +748,15 @@ function updateFrontFace() {
   const name = turn === 0 ? state.get('player1') : state.get('player2');
   const emojiEl = document.getElementById('front-emoji');
   const labelEl = document.getElementById('front-label');
-  const emojis = { 'truth-or-dare': '🎲', 'never-have-i-ever': '🙋', 'would-you-rather': '🤔', 'who-is-most-likely': '🧠' };
+  const emojis = {
+    'truth-or-dare': '🎲',
+    'never-have-i-ever': '🙋',
+    'would-you-rather': '🤔',
+    'who-is-most-likely': '🧠',
+    'finish-the-sentence': '✍️',
+    'this-or-that': '⚡',
+    'how-well-do-you-know-me': '🔮',
+  };
   if (emojiEl) emojiEl.textContent = emojis[_game] ?? '🎴';
   if (labelEl) labelEl.textContent = t('game.turn', { name });
 }
@@ -556,10 +786,17 @@ function gameName(game) {
     'never-have-i-ever': '🙋 Never Have I Ever',
     'would-you-rather': '🤔 Would You Rather',
     'who-is-most-likely': '🧠 Who\'s More Likely',
+    'finish-the-sentence': '✍️ Finish the Sentence',
+    'this-or-that': '⚡ This or That',
+    'how-well-do-you-know-me': '🧠 How Well Do You Know Me?',
   };
   return names[game] ?? game;
 }
 
 function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }

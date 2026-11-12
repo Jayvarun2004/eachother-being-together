@@ -13,17 +13,17 @@ const defaults = {
   player2: 'Player 2',
 
   // Game settings
-  game: null,          // 'truth-or-dare' | 'never-have-i-ever' | 'would-you-rather'
-  level: 'wholesome',  // 'wholesome' | 'flirty' | 'spicy'
-  mode: 'local',       // 'local' | 'online'
-  theme: 'light',      // 'light' | 'dark'
-  sound: true,
+  game: null, // 'truth-or-dare' | 'never-have-i-ever' | 'would-you-rather'
+  level: 'wholesome', // 'wholesome' | 'flirty' | 'spicy'
+  mode: 'local', // 'local' | 'online'
+  theme: 'light', // 'light' | 'dark'
+  sound: false,
 
   // Session state
-  currentTurn: 0,      // 0 = player1, 1 = player2
+  currentTurn: 0, // 0 = player1, 1 = player2
   scores: [0, 0],
-  skipsLeft: [3, 3],   // 3 skips per player per session
-  vetosLeft: [1, 1],   // 1 veto per player per session
+  skipsLeft: [3, 3], // 3 skips per player per session
+  vetosLeft: [1, 1], // 1 veto per player per session
 
   // End recap
   cardsPlayed: 0,
@@ -40,7 +40,7 @@ const defaults = {
   // Online room
   roomId: null,
   roomCode: null,
-  playerId: null,  // Supabase auth user id
+  playerId: null, // Supabase auth user id
 
   // Spicy age gate
   spicyConfirmed: [false, false],

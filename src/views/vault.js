@@ -40,15 +40,20 @@ export function renderVault() {
         </p>
       </div>
 
-      ${vault.length === 0 ? `
+      ${
+        vault.length === 0
+          ? `
         <div class="glass-card" style="text-align:center; padding: 2.5rem 1.5rem; color: var(--text-muted);">
           <div style="font-size: 3rem; margin-bottom: 0.75rem;">💝</div>
           <p style="font-size: var(--text-sm);">Your favourite moments from the game will appear here.<br>Start a game and tap <strong>💌 Save to Love Vault</strong> on any card.</p>
           <button class="btn btn-primary" id="btn-go-home" style="margin-top: 1.25rem;">🎮 Play a Game</button>
         </div>
-      ` : `
+      `
+          : `
         <div class="vault-card-list" id="vault-list">
-          ${vault.map((card, i) => `
+          ${vault
+            .map(
+              (card, i) => `
             <div class="vault-card glass-card" data-index="${i}">
               <div class="vault-card-meta">
                 <span class="vault-game-tag">${GAME_LABELS[card.game] ?? card.game}</span>
@@ -60,9 +65,12 @@ export function renderVault() {
                 <button class="vault-remove-btn" data-text="${escHtml(card.text)}" aria-label="Remove from vault">✕ Remove</button>
               </div>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
-      `}
+      `
+      }
     </div>
   `;
 
@@ -78,7 +86,7 @@ export function renderVault() {
     }
   });
 
-  document.querySelectorAll('.vault-remove-btn').forEach(btn => {
+  document.querySelectorAll('.vault-remove-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const text = e.target.dataset.text;
       removeFromVault(text);
@@ -89,7 +97,11 @@ export function renderVault() {
 }
 
 function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function formatDate(iso) {

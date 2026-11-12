@@ -8,11 +8,14 @@ const COLORS = ['#c4556a', '#e07a5f', '#6b4fa0', '#f4c86f', '#9b7fcb', '#fff'];
 let _particles = [];
 let _animId = null;
 
-function rand(min, max) { return Math.random() * (max - min) + min; }
+function rand(min, max) {
+  return Math.random() * (max - min) + min;
+}
 
 function createParticle(x, y) {
   return {
-    x, y,
+    x,
+    y,
     vx: rand(-4, 4),
     vy: rand(-8, -3),
     alpha: 1,
@@ -38,7 +41,7 @@ function draw() {
   canvas.height = window.innerHeight;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  _particles = _particles.filter(p => p.alpha > 0.01);
+  _particles = _particles.filter((p) => p.alpha > 0.01);
 
   for (const p of _particles) {
     p.x += p.vx;

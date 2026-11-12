@@ -6,7 +6,7 @@
 import { state } from './state.js';
 
 let _ctx = null;
-let _muted = false;
+let _muted = true;
 let _ambientSource = null;
 let _ambientType = 'off'; // 'off' | 'rain' | 'fireplace'
 
@@ -43,12 +43,27 @@ function playTone(freq, duration = 0.15, type = 'sine', gain = 0.3) {
 }
 
 export const sounds = {
-  flip() { playTone(440, 0.1, 'sine'); },
-  done() { playTone(660, 0.2, 'triangle'); setTimeout(() => playTone(880, 0.15, 'triangle'), 100); },
-  skip() { playTone(330, 0.1, 'sawtooth', 0.15); },
-  veto() { playTone(220, 0.3, 'square', 0.2); },
-  reveal() { [440, 550, 660].forEach((f, i) => setTimeout(() => playTone(f, 0.15, 'sine'), i * 80)); },
-  confetti() { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playTone(f, 0.12, 'triangle'), i * 60)); },
+  flip() {
+    playTone(440, 0.1, 'sine');
+  },
+  done() {
+    playTone(660, 0.2, 'triangle');
+    setTimeout(() => playTone(880, 0.15, 'triangle'), 100);
+  },
+  skip() {
+    playTone(330, 0.1, 'sawtooth', 0.15);
+  },
+  veto() {
+    playTone(220, 0.3, 'square', 0.2);
+  },
+  reveal() {
+    [440, 550, 660].forEach((f, i) => setTimeout(() => playTone(f, 0.15, 'sine'), i * 80));
+  },
+  confetti() {
+    [523, 659, 784, 1047].forEach((f, i) =>
+      setTimeout(() => playTone(f, 0.12, 'triangle'), i * 60)
+    );
+  },
 };
 
 /**
@@ -78,7 +93,9 @@ export function toggleAmbientSound() {
     try {
       _ambientSource.stop();
       _ambientSource.disconnect();
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     _ambientSource = null;
     _ambientType = 'off';
     return 'off';
@@ -88,12 +105,14 @@ export function toggleAmbientSound() {
   const bufferSize = ctx.sampleRate * 5;
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const data = buffer.getChannelData(0);
-  let b0 = 0, b1 = 0, b2 = 0;
+  let b0 = 0,
+    b1 = 0,
+    b2 = 0;
   for (let i = 0; i < bufferSize; i++) {
     const white = Math.random() * 2 - 1;
     b0 = 0.99886 * b0 + white * 0.0555179;
     b1 = 0.99332 * b1 + white * 0.0750759;
-    b2 = 0.96900 * b2 + white * 0.1538520;
+    b2 = 0.969 * b2 + white * 0.153852;
     data[i] = (b0 + b1 + b2 + white * 0.1) * 0.06;
   }
 
@@ -120,7 +139,9 @@ export function toggleAmbientSound() {
 }
 
 export function initSound() {
-  _muted = !state.get('sound');
+  // Start muted; restore only if the user previously enabled sound
+  const savedSound = state.get('sound');
+  _muted = savedSound !== true;
   updateSoundBtn();
 
   const btn = document.getElementById('sound-toggle');

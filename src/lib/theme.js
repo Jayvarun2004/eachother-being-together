@@ -29,7 +29,7 @@ export function applyTheme(theme) {
 
 export function cycleTheme() {
   const current = state.get('theme') ?? 'light';
-  const idx = THEMES.findIndex(t => t.id === current);
+  const idx = THEMES.findIndex((t) => t.id === current);
   const next = THEMES[(idx + 1) % THEMES.length];
   applyTheme(next.id);
   return next;
@@ -37,5 +37,5 @@ export function cycleTheme() {
 
 export function getCurrentThemeObj() {
   const current = state.get('theme') ?? 'light';
-  return THEMES.find(t => t.id === current) || THEMES[0];
+  return THEMES.find((t) => t.id === current) || THEMES[0];
 }

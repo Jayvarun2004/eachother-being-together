@@ -19,6 +19,7 @@ const ROOM_CODE_LENGTH = 5;
 export function renderRoom() {
   const app = document.getElementById('app');
   const game = state.get('game') ?? 'truth-or-dare';
+  const isOffline = !navigator.onLine;
 
   app.innerHTML = /* html */ `
     <div class="view active animate-slide-up" id="view-room">
@@ -27,6 +28,18 @@ export function renderRoom() {
         <span class="header-logo">📡 Play With Friend</span>
         <div style="width:44px"></div>
       </header>
+
+      ${
+        isOffline
+          ? `
+        <div class="glass-card mb-4" style="text-align:center; padding: 1rem; border-color: var(--color-rose); background: rgba(196,85,106,0.1);">
+          <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">⚠️</div>
+          <div style="font-size: var(--text-sm); font-weight: 700; color: var(--color-rose);">You are currently offline</div>
+          <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 0.25rem;">Pass-and-play works without internet, but online rooms require a connection.</div>
+        </div>
+      `
+          : ''
+      }
 
       <div class="glass-card mb-4" style="text-align:center; padding: 1.25rem 1rem; background: linear-gradient(135deg, rgba(255,107,157,0.07), rgba(124,58,237,0.07)); border-color: var(--accent);">
         <div style="font-size: 1.5rem; margin-bottom: 0.4rem;">💞</div>
@@ -102,7 +115,7 @@ export function renderRoom() {
   }
 
   // Check Supabase availability, then pick mode
-  getSupabase().then(sb => {
+  getSupabase().then((sb) => {
     if (sb) {
       const notice = document.getElementById('mode-notice');
       const noticeText = document.getElementById('mode-notice-text');
@@ -131,6 +144,10 @@ async function initSupabaseRoom(sb, game) {
   let currentRoomCode = null;
 
   document.getElementById('btn-create')?.addEventListener('click', async () => {
+    if (!navigator.onLine) {
+      toast('You are offline. Connect to the internet to host a room.', 'warning');
+      return;
+    }
     const btn = document.getElementById('btn-create');
     btn.disabled = true;
     btn.textContent = 'Creating…';
@@ -140,14 +157,18 @@ async function initSupabaseRoom(sb, game) {
       if (!user) throw new Error('Sign-in failed');
 
       const code = generateCode();
-      const { data, error } = await sb.from('rooms').insert({
-        code,
-        game,
-        level: state.get('level'),
-        player1_id: user.id,
-        player1_name: state.get('player1'),
-        state: { turn: 0, scores: [0, 0], skipsLeft: [3, 3], vetosLeft: [1, 1] },
-      }).select().single();
+      const { data, error } = await sb
+        .from('rooms')
+        .insert({
+          code,
+          game,
+          level: state.get('level'),
+          player1_id: user.id,
+          player1_name: state.get('player1'),
+          state: { turn: 0, scores: [0, 0], skipsLeft: [3, 3], vetosLeft: [1, 1] },
+        })
+        .select()
+        .single();
 
       if (error) throw error;
 
@@ -158,8 +179,11 @@ async function initSupabaseRoom(sb, game) {
       showPartnerStatus('waiting');
 
       sb.channel(`room:${data.id}`)
-        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `id=eq.${data.id}` },
-          payload => handleRoomUpdate(payload.new, 'player1'))
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `id=eq.${data.id}` },
+          (payload) => handleRoomUpdate(payload.new, 'player1')
+        )
         .subscribe();
 
       btn.textContent = '✅ Room Created!';
@@ -184,6 +208,10 @@ async function initSupabaseRoom(sb, game) {
 }
 
 async function joinSupabaseRoom(sb, code) {
+  if (!navigator.onLine) {
+    toast('You are offline. Connect to the internet to join a room.', 'warning');
+    return;
+  }
   const btn = document.getElementById('btn-join');
   btn.disabled = true;
   btn.textContent = '…';
@@ -192,21 +220,31 @@ async function joinSupabaseRoom(sb, code) {
     const user = await signInAnonymously();
     if (!user) throw new Error('Sign-in failed');
 
-    const { data: room, error } = await sb
-      .from('rooms')
-      .select('*')
-      .eq('code', code)
-      .single();
+    const { data: room, error } = await sb.from('rooms').select('*').eq('code', code).single();
 
-    if (error || !room) { toast(t('errors.roomNotFound'), 'error'); return; }
+    if (error || !room) {
+      toast('Room not found or expired — check the code or host a new room.', 'error');
+      return;
+    }
+    if (room.player1_id === user.id) {
+      toast(
+        'You\'re already the host of this room! Share the link or code with your partner.',
+        'info'
+      );
+      return;
+    }
     if (room.player2_id && room.player2_id !== user.id) {
-      toast(t('room.fullRoom'), 'error'); return;
+      toast('This room is already full with 2 players.', 'error');
+      return;
     }
 
-    const { error: updateErr } = await sb.from('rooms').update({
-      player2_id: user.id,
-      player2_name: state.get('player2'),
-    }).eq('id', room.id);
+    const { error: updateErr } = await sb
+      .from('rooms')
+      .update({
+        player2_id: user.id,
+        player2_name: state.get('player2'),
+      })
+      .eq('id', room.id);
 
     if (updateErr) throw updateErr;
 
@@ -221,8 +259,11 @@ async function joinSupabaseRoom(sb, code) {
     });
 
     sb.channel(`room:${room.id}`)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `id=eq.${room.id}` },
-        payload => handleRoomUpdate(payload.new, 'player2'))
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `id=eq.${room.id}` },
+        (payload) => handleRoomUpdate(payload.new, 'player2')
+      )
       .subscribe();
 
     showPartnerStatus('online', room.player1_name);
@@ -288,7 +329,12 @@ async function initPeerRoom(game) {
         showPartnerStatus('online', 'Your partner');
         toast('💞 Partner connected!', 'success');
         // Send game settings to partner
-        conn.send({ type: 'game-info', game, level: state.get('level'), player1: state.get('player1') });
+        conn.send({
+          type: 'game-info',
+          game,
+          level: state.get('level'),
+          player1: state.get('player1'),
+        });
         setTimeout(() => navigate(`game/${game}`), 1500);
       });
       conn.on('data', handlePeerData);
@@ -375,7 +421,10 @@ function handlePeerData(data) {
 function showRoomCode(code) {
   const display = document.getElementById('room-code-display');
   const shareRow = document.getElementById('room-share-row');
-  if (display) { display.textContent = code; display.style.display = 'block'; }
+  if (display) {
+    display.textContent = code;
+    display.style.display = 'block';
+  }
   if (shareRow) shareRow.style.display = 'flex';
 }
 
@@ -384,7 +433,8 @@ function setupShareButtons(getCode) {
     const code = getCode();
     if (!code) return;
     const link = `${window.location.origin}${window.location.pathname}?room=${code}#room`;
-    navigator.clipboard?.writeText(link)
+    navigator.clipboard
+      ?.writeText(link)
       .then(() => toast('💕 Invite link copied! Share it with your partner.', 'success'))
       .catch(() => {
         // Fallback: show the link in a prompt
@@ -397,11 +447,13 @@ function setupShareButtons(getCode) {
     if (!code) return;
     const link = `${window.location.origin}${window.location.pathname}?room=${code}#room`;
     if (navigator.share) {
-      navigator.share({
-        title: 'Play with me on Eachother Being Together 💕',
-        text: `Join my game! Code: ${code}`,
-        url: link,
-      }).catch(() => {});
+      navigator
+        .share({
+          title: 'Play with me on Eachother Being Together 💕',
+          text: `Join my game! Code: ${code}`,
+          url: link,
+        })
+        .catch(() => {});
     }
   });
 }
@@ -426,13 +478,19 @@ function showPartnerStatus(status, name = '') {
 
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({ length: ROOM_CODE_LENGTH }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  return Array.from(
+    { length: ROOM_CODE_LENGTH },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join('');
 }
 
 function loadScript(src) {
   return new Promise((resolve, reject) => {
     const existing = document.querySelector(`script[src="${src}"]`);
-    if (existing) { resolve(); return; }
+    if (existing) {
+      resolve();
+      return;
+    }
     const script = document.createElement('script');
     script.src = src;
     script.onload = resolve;

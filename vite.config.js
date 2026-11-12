@@ -13,6 +13,7 @@ export default defineConfig({
     port: 5173,
     allowedHosts: true,
     proxy: {
+      // Ollama proxy — used by src/lib/ai.js for local AI card generation
       '/api/ollama': {
         target: 'http://localhost:11434',
         changeOrigin: true,

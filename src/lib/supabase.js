@@ -25,7 +25,8 @@ export async function getSupabase() {
 
   try {
     // Dynamic import keeps the bundle small when Supabase isn't used
-    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const { createClient } =
+      await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
     _supabase = createClient(url, key, {
       auth: {
         persistSession: true,
@@ -45,7 +46,10 @@ export async function signInAnonymously() {
   const sb = await getSupabase();
   if (!sb) return null;
   const { data, error } = await sb.auth.signInAnonymously();
-  if (error) { console.error('anon sign-in', error); return null; }
+  if (error) {
+    console.error('anon sign-in', error);
+    return null;
+  }
   return data.user;
 }
 

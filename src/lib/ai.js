@@ -28,8 +28,7 @@ export async function checkOllamaAvailable() {
       const models = data.models || [];
       if (models.length > 0) {
         // Prefer gemma, llama, mistral if present, or take first
-        const best =
-          models.find(m => /gemma|llama|mistral/i.test(m.name)) || models[0];
+        const best = models.find((m) => /gemma|llama|mistral/i.test(m.name)) || models[0];
         _cachedOllamaModel = best.name;
         return _cachedOllamaModel;
       }
@@ -121,7 +120,12 @@ If would-you-rather:
         const data = await res.json();
         const parsed = cleanAndParseJSON(data.response);
         if (parsed) {
-          return { id: `ollama_${Date.now()}`, level, tags: ['ollama', ollamaModel, vibe], ...parsed };
+          return {
+            id: `ollama_${Date.now()}`,
+            level,
+            tags: ['ollama', ollamaModel, vibe],
+            ...parsed,
+          };
         }
       }
     } catch (e) {
@@ -262,7 +266,10 @@ Return ONLY a valid JSON object matching the exact original structure (fields: t
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: [
-          { role: 'system', content: 'You are a couples card game modifier. Return raw JSON only.' },
+          {
+            role: 'system',
+            content: 'You are a couples card game modifier. Return raw JSON only.',
+          },
           { role: 'user', content: prompt },
         ],
         jsonMode: true,
@@ -288,7 +295,10 @@ Return ONLY a valid JSON object matching the exact original structure (fields: t
 function cleanAndParseJSON(raw) {
   if (!raw) return null;
   try {
-    const cleaned = raw.replace(/^```json/i, '').replace(/```$/i, '').trim();
+    const cleaned = raw
+      .replace(/^```json/i, '')
+      .replace(/```$/i, '')
+      .trim();
     return JSON.parse(cleaned);
   } catch {
     const match = raw.match(/\{[\s\S]*\}/);
@@ -363,7 +373,8 @@ function getLocalCuratedCard(game, level, vibe) {
       },
       {
         optionA: 'Have a romance where the physical spark only grows wilder every decade',
-        optionB: 'Have an emotional telepathy where you understand every glance across a crowded room',
+        optionB:
+          'Have an emotional telepathy where you understand every glance across a crowded room',
       },
       {
         optionA: 'Relive our most passionate evening together as if it were happening right now',
