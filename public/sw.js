@@ -10,7 +10,7 @@
  *  - Total failure            → Inline offline HTML
  */
 
-const CACHE_NAME = 'ebt-v3';
+const CACHE_NAME = 'ebt-v4';
 
 /** Resources pre-cached at install time (app shell). */
 const PRECACHE_URLS = [
