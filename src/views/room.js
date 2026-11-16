@@ -13,6 +13,7 @@ import { state } from '../lib/state.js';
 import { navigate } from '../lib/router.js';
 import { toast } from '../lib/toast.js';
 import { getSupabase, signInAnonymously } from '../lib/supabase.js';
+import { multiplayer } from '../lib/multiplayer.js';
 
 const ROOM_CODE_LENGTH = 5;
 
@@ -97,14 +98,17 @@ export function renderRoom() {
 
   document.getElementById('btn-back')?.addEventListener('click', () => navigate('home'));
 
-  // Auto-fill code from URL ?room=XXXXX
+  // Auto-fill code from URL ?room=XXXXX and auto-join
   const urlParams = new URLSearchParams(window.location.search);
-  const roomFromUrl = urlParams.get('room');
+  const roomFromUrl = urlParams.get('room') || urlParams.get('join');
   if (roomFromUrl) {
     const codeInput = document.getElementById('inp-room-code');
     if (codeInput) {
       codeInput.value = roomFromUrl.toUpperCase();
-      toast('Room code pre-filled from link!', 'success');
+      toast('Connecting to your partner\'s room...', 'info', 2500);
+      setTimeout(() => {
+        document.getElementById('btn-join')?.click();
+      }, 700);
     }
   }
 
@@ -289,64 +293,38 @@ function handleRoomUpdate(room, myRole) {
 // ═══════════════════════════════════════════════════════
 // P2P PEER.JS ROOM MODE (no backend needed)
 // ═══════════════════════════════════════════════════════
-let _peer = null;
-let _conn = null;
 
 async function initPeerRoom(game) {
-  // Lazy-load PeerJS from CDN
-  try {
-    if (!window.Peer) {
-      await loadScript('https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js');
-    }
-  } catch (e) {
-    toast('Could not load P2P library. Check internet connection.', 'error');
-    return;
-  }
-
-  document.getElementById('btn-create')?.addEventListener('click', () => {
+  document.getElementById('btn-create')?.addEventListener('click', async () => {
     const btn = document.getElementById('btn-create');
     btn.disabled = true;
     btn.textContent = 'Connecting…';
 
     const code = generateCode();
-    _peer = new window.Peer(`ebt-${code}`, {
-      host: '0.peerjs.com',
-      port: 443,
-      path: '/',
-      secure: true,
-    });
 
-    _peer.on('open', () => {
+    try {
+      await multiplayer.initHost(code, {
+        game,
+        level: state.get('level'),
+        myName: state.get('player1'),
+      });
+
       showRoomCode(code);
       showPartnerStatus('waiting');
       btn.textContent = '✅ Room Created!';
-      toast('Room created! Share the code with your friend 🎉', 'success');
-    });
+      toast('Room created! Share the code with your partner 🎉', 'success');
 
-    _peer.on('connection', (conn) => {
-      _conn = conn;
-      conn.on('open', () => {
-        showPartnerStatus('online', 'Your partner');
-        toast('💞 Partner connected!', 'success');
-        // Send game settings to partner
-        conn.send({
-          type: 'game-info',
-          game,
-          level: state.get('level'),
-          player1: state.get('player1'),
-        });
-        setTimeout(() => navigate(`game/${game}`), 1500);
+      multiplayer.on('partner_joined', ({ partnerName }) => {
+        showPartnerStatus('online', partnerName);
+        toast(`💞 ${partnerName} connected!`, 'success');
+        setTimeout(() => navigate(`game/${game}`), 1400);
       });
-      conn.on('data', handlePeerData);
-      conn.on('close', () => showPartnerStatus('offline'));
-    });
-
-    _peer.on('error', (err) => {
-      console.error('PeerJS error', err);
+    } catch (err) {
+      console.error('PeerJS host error', err);
       toast('Connection error. Try again.', 'error');
       btn.disabled = false;
       btn.textContent = '🎉 Create Room';
-    });
+    }
   });
 
   setupShareButtons(() => {
@@ -354,64 +332,40 @@ async function initPeerRoom(game) {
     return codeEl?.textContent?.trim() ?? null;
   });
 
-  document.getElementById('btn-join')?.addEventListener('click', () => {
+  document.getElementById('btn-join')?.addEventListener('click', async () => {
     const code = (document.getElementById('inp-room-code')?.value ?? '').trim().toUpperCase();
     if (code.length !== ROOM_CODE_LENGTH) {
       toast(`Please enter a ${ROOM_CODE_LENGTH}-letter code`, 'warning');
       return;
     }
-    joinPeerRoom(code);
+    await joinPeerRoom(code, game);
   });
 }
 
-function joinPeerRoom(code) {
+async function joinPeerRoom(code, defaultGame) {
   const btn = document.getElementById('btn-join');
   btn.disabled = true;
   btn.textContent = 'Connecting…';
 
-  _peer = new window.Peer(undefined, {
-    host: '0.peerjs.com',
-    port: 443,
-    path: '/',
-    secure: true,
-  });
-
-  _peer.on('open', () => {
-    _conn = _peer.connect(`ebt-${code}`, { reliable: true });
-
-    _conn.on('open', () => {
-      showPartnerStatus('online', 'Host');
-      toast('💞 Connected to room!', 'success');
+  try {
+    await multiplayer.initJoin(code, {
+      myName: state.get('player2'),
     });
 
-    _conn.on('data', (data) => {
-      if (data.type === 'game-info') {
-        state.patch({
-          game: data.game,
-          level: data.level,
-          player1: data.player1,
-          mode: 'online',
-        });
-        setTimeout(() => navigate(`game/${data.game}`), 1200);
-      }
-      handlePeerData(data);
+    showPartnerStatus('online', 'Host');
+    toast('💞 Connected to room!', 'success');
+
+    multiplayer.on('partner_joined', ({ partnerName }) => {
+      showPartnerStatus('online', partnerName);
+      const targetGame = state.get('game') || defaultGame;
+      setTimeout(() => navigate(`game/${targetGame}`), 1200);
     });
-
-    _conn.on('close', () => showPartnerStatus('offline'));
-
-    _peer.on('error', (err) => {
-      console.error('PeerJS join error', err);
-      toast('Could not find room. Check the code and try again.', 'error');
-      btn.disabled = false;
-      btn.textContent = t('room.btnJoin');
-    });
-  });
-}
-
-function handlePeerData(data) {
-  if (data.type === 'game-info') return; // handled inline
-  // Future: sync card state across devices
-  console.log('Peer data received:', data);
+  } catch (err) {
+    console.error('PeerJS join error', err);
+    toast('Could not find room. Check the code and try again.', 'error');
+    btn.disabled = false;
+    btn.textContent = t('room.btnJoin');
+  }
 }
 
 // ═══════════════════════════════════════════════════════

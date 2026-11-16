@@ -19,6 +19,8 @@ import { fireConfetti } from '../lib/confetti.js';
 import { vibrate } from '../lib/haptic.js';
 import { saveToVault, isVaulted, removeFromVault } from '../lib/vault.js';
 import { updateStats } from '../lib/stats.js';
+import { multiplayer } from '../lib/multiplayer.js';
+import { mountChatPanel, unmountChatPanel } from '../lib/chat-panel.js';
 
 // --- Game module registry ---
 // Each module exports: { renderCardContent(card, el), onReveal(card, el), onDone() }
@@ -69,14 +71,19 @@ export async function renderGame(game) {
   _flipped = false;
 
   const app = document.getElementById('app');
+  const isOnline = state.get('mode') === 'online' || multiplayer.isConnected;
 
   app.innerHTML = /* html */ `
-    <div class="view game-view active animate-fade-in" id="view-game">
-      <header class="app-header">
-        <button class="btn-icon" id="btn-home" aria-label="Home" title="Go home">🏠</button>
-        <span style="font-size:var(--text-sm);color:var(--text-muted)">${gameName(game)}</span>
-        <button class="btn-icon" id="btn-end" aria-label="End game" title="End game">🏁</button>
-      </header>
+    <div class="view game-view active animate-fade-in multiplayer-layout" id="view-game">
+      <div class="game-arena-column">
+        <header class="app-header">
+          <button class="btn-icon" id="btn-home" aria-label="Home" title="Go home">🏠</button>
+          <span style="font-size:var(--text-sm);color:var(--text-muted)">${gameName(game)}</span>
+          <div style="display:flex;gap:0.35rem;align-items:center;">
+            <button class="btn-icon" id="btn-toggle-chat-header" aria-label="Toggle WhatsApp Chat" title="Open WhatsApp Chat">💬</button>
+            <button class="btn-icon" id="btn-end" aria-label="End game" title="End game">🏁</button>
+          </div>
+        </header>
 
       <!-- Player bar -->
       <div class="player-bar" aria-live="polite">
@@ -187,14 +194,54 @@ export async function renderGame(game) {
           <button class="btn btn-ghost btn-sm" id="btn-cancel-secret">Cancel</button>
         </div>
       </div>
+      </div>
     </div>
   `;
 
+  // Always Mount WhatsApp Side Panel
+  const viewGameEl = document.getElementById('view-game');
+  if (viewGameEl) {
+    mountChatPanel(viewGameEl);
+  }
+  if (isOnline) {
+    setupGameMultiplayerSync();
+  }
+
+  // Header chat toggle button
+  document.getElementById('btn-toggle-chat-header')?.addEventListener('click', () => {
+    const fab = document.getElementById('chat-floating-fab');
+    if (fab) fab.click();
+    else {
+      const panel = document.getElementById('game-chat-panel');
+      if (panel) {
+        panel.classList.toggle('open');
+        panel.classList.toggle('closed');
+      }
+    }
+  });
+
+  // Delegated button sync for question choices (WYR, NHIE, Soul Sync, etc.)
+  document.getElementById('game-specific-area')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn || !btn.id || e._isRemote) return;
+    if (state.get('mode') === 'online' || multiplayer.isConnected) {
+      multiplayer.send('sync_button_click', { buttonId: btn.id });
+    }
+  });
+
   // Wire up navigation
   document.getElementById('btn-home')?.addEventListener('click', () => {
-    if (confirm('Go back to home? Your progress will be saved.')) navigate('home');
+    if (confirm('Go back to home? Your progress will be saved.')) {
+      cleanupGameMultiplayerSync();
+      unmountChatPanel();
+      navigate('home');
+    }
   });
-  document.getElementById('btn-end')?.addEventListener('click', () => navigate('end'));
+  document.getElementById('btn-end')?.addEventListener('click', () => {
+    cleanupGameMultiplayerSync();
+    unmountChatPanel();
+    navigate('end');
+  });
 
   // Flip card
   const flipCard = document.getElementById('flip-card');
@@ -314,9 +361,15 @@ export async function renderGame(game) {
 let _dareTimerInterval = null;
 let _dareTimerSeconds = 0;
 
-function startDareTimer(seconds) {
+function startDareTimer(seconds, isRemote = false) {
   stopDareTimer();
   _dareTimerSeconds = seconds;
+
+  const isOnline = state.get('mode') === 'online' || multiplayer.isConnected;
+  if (isOnline && !isRemote) {
+    multiplayer.syncTimer(seconds);
+  }
+
   const wrap = document.getElementById('dare-timer-area');
   if (!wrap) return;
   wrap.style.display = 'block';
@@ -387,18 +440,58 @@ function showHandoverScreen(nextPlayerName, onReady) {
   });
 }
 
-async function loadNextCard() {
-  _flipped = false;
-  stopDareTimer();
+let _gameMultiplayerUnsubs = [];
 
-  if (_baseLevel === 'mix') {
-    if (_cardsThisSession >= 10) _level = 'spicy';
-    else if (_cardsThisSession >= 5) _level = 'flirty';
-    else _level = 'wholesome';
-  }
+function cleanupGameMultiplayerSync() {
+  _gameMultiplayerUnsubs.forEach((fn) => fn?.());
+  _gameMultiplayerUnsubs = [];
+}
 
-  _currentCard = await drawCard(_game, _level);
+function setupGameMultiplayerSync() {
+  cleanupGameMultiplayerSync();
 
+  const u1 = multiplayer.on('sync_card', async ({ card, level }) => {
+    _currentCard = card;
+    if (level) _level = level;
+    _flipped = false;
+    stopDareTimer();
+    await renderCardState();
+  });
+
+  const u2 = multiplayer.on('sync_flip', () => {
+    if (!_flipped) {
+      handleFlip(true);
+    }
+  });
+
+  const u3 = multiplayer.on('sync_done', ({ scores }) => {
+    if (scores) state.set('scores', scores);
+    handleDone(true);
+  });
+
+  const u4 = multiplayer.on('sync_skip', ({ skipsLeft }) => {
+    if (skipsLeft) state.set('skipsLeft', skipsLeft);
+    handleSkip(true);
+  });
+
+  const u5 = multiplayer.on('sync_timer', ({ seconds }) => {
+    startDareTimer(seconds, true);
+  });
+
+  const u6 = multiplayer.on('sync_button_click', ({ buttonId }) => {
+    if (!buttonId) return;
+    const btn = document.getElementById(buttonId);
+    if (btn) {
+      const evt = new MouseEvent('click', { bubbles: true, cancelable: true });
+      evt._isRemote = true;
+      btn.dispatchEvent(evt);
+    }
+  });
+
+  _gameMultiplayerUnsubs.push(u1, u2, u3, u4, u5, u6);
+}
+
+async function renderCardState() {
   const flipCard = document.getElementById('flip-card');
   if (flipCard) {
     flipCard.classList.remove('flipped');
@@ -406,7 +499,8 @@ async function loadNextCard() {
   }
 
   // Hide actions until card is flipped
-  document.getElementById('card-actions').style.display = 'none';
+  const actions = document.getElementById('card-actions');
+  if (actions) actions.style.display = 'none';
 
   // Hide vault button until flipped
   const vaultBtn = document.getElementById('btn-vault-save');
@@ -429,40 +523,77 @@ async function loadNextCard() {
   updateDeckProgress();
 
   // Reset game-specific area
-  document.getElementById('game-specific-area').innerHTML = '';
+  const specArea = document.getElementById('game-specific-area');
+  if (specArea) specArea.innerHTML = '';
 
   // Let the game module prepare the card back (hidden until flip)
   if (_currentCard && _gameModule) {
     const backFace = document.getElementById('card-back-face');
-    _gameModule.renderCardContent(_currentCard, backFace);
+    if (backFace) {
+      _gameModule.renderCardContent(_currentCard, backFace);
 
-    if (_currentCard.fromPartner) {
-      const pNote = document.createElement('div');
-      pNote.className = 'from-partner-label';
-      pNote.style.cssText =
-        'text-align:center;font-size:var(--text-xs);font-weight:700;color:var(--color-rose);margin-top:0.5rem;';
-      pNote.innerHTML = '💌 from your partner';
-      backFace.appendChild(pNote);
-    }
+      if (_currentCard.fromPartner) {
+        const pNote = document.createElement('div');
+        pNote.className = 'from-partner-label';
+        pNote.style.cssText =
+          'text-align:center;font-size:var(--text-xs);font-weight:700;color:var(--color-rose);margin-top:0.5rem;';
+        pNote.innerHTML = '💌 from your partner';
+        backFace.appendChild(pNote);
+      }
 
-    if (_currentCard.isAutoGenerated) {
-      const gNote = document.createElement('div');
-      gNote.className = 'auto-gen-label';
-      gNote.style.cssText =
-        'text-align:center;font-size:0.7rem;font-weight:600;color:var(--text-muted);margin-top:0.5rem;letter-spacing:0.04em;text-transform:uppercase;';
-      gNote.innerHTML = '✦ Auto-Generated for You';
-      backFace.appendChild(gNote);
+      if (_currentCard.isAutoGenerated) {
+        const gNote = document.createElement('div');
+        gNote.className = 'auto-gen-label';
+        gNote.style.cssText =
+          'text-align:center;font-size:0.7rem;font-weight:600;color:var(--text-muted);margin-top:0.5rem;letter-spacing:0.04em;text-transform:uppercase;';
+        gNote.innerHTML = '✦ Auto-Generated for You';
+        backFace.appendChild(gNote);
+      }
     }
   }
 }
 
-async function handleFlip() {
+async function loadNextCard() {
+  _flipped = false;
+  stopDareTimer();
+
+  const isOnline = state.get('mode') === 'online' || multiplayer.isConnected;
+
+  // In online mode, Guest waits for Host to draw and sync the card
+  if (isOnline && !multiplayer.isHost && multiplayer.isConnected) {
+    if (_currentCard) {
+      await renderCardState();
+    }
+    return;
+  }
+
+  if (_baseLevel === 'mix') {
+    if (_cardsThisSession >= 10) _level = 'spicy';
+    else if (_cardsThisSession >= 5) _level = 'flirty';
+    else _level = 'wholesome';
+  }
+
+  _currentCard = await drawCard(_game, _level);
+
+  if (isOnline && multiplayer.isConnected) {
+    multiplayer.syncCard(_currentCard, _level);
+  }
+
+  await renderCardState();
+}
+
+async function handleFlip(isRemote = false) {
   if (_flipped) return;
   if (!_currentCard) return;
 
   _flipped = true;
   sounds.flip();
   vibrate('flip');
+
+  const isOnline = state.get('mode') === 'online' || multiplayer.isConnected;
+  if (isOnline && !isRemote) {
+    multiplayer.syncFlip();
+  }
 
   document.getElementById('flip-card')?.classList.add('flipped');
 
@@ -509,7 +640,7 @@ async function handleFlip() {
   }
 }
 
-async function handleDone() {
+async function handleDone(isRemote = false) {
   if (!_flipped) return;
   stopDareTimer();
   sounds.done();
@@ -521,6 +652,11 @@ async function handleDone() {
   const scores = [...(state.get('scores') ?? [0, 0])];
   scores[turn] = (scores[turn] ?? 0) + 1;
   state.set('scores', scores);
+
+  const isOnline = state.get('mode') === 'online' || multiplayer.isConnected;
+  if (isOnline && !isRemote) {
+    multiplayer.syncDone(scores, turn);
+  }
 
   _cardsThisSession++;
   state.set('cardsPlayed', (state.get('cardsPlayed') ?? 0) + 1);
@@ -549,7 +685,7 @@ async function handleDone() {
   }
 }
 
-async function handleSkip() {
+async function handleSkip(isRemote = false) {
   const turn = state.get('currentTurn');
   const skipsLeft = [...(state.get('skipsLeft') ?? [3, 3])];
 
@@ -563,6 +699,11 @@ async function handleSkip() {
   vibrate('skip');
   skipsLeft[turn]--;
   state.set('skipsLeft', skipsLeft);
+
+  const isOnline = state.get('mode') === 'online' || multiplayer.isConnected;
+  if (isOnline && !isRemote) {
+    multiplayer.syncSkip(skipsLeft, turn);
+  }
 
   const skipsUsed = [...(state.get('skipsUsed') ?? [0, 0])];
   skipsUsed[turn]++;

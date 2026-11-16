@@ -67,6 +67,14 @@ export const sounds = {
       setTimeout(() => playTone(f, 0.12, 'triangle'), i * 60)
     );
   },
+  chatSend() {
+    playTone(720, 0.05, 'sine', 0.12);
+    setTimeout(() => playTone(960, 0.08, 'sine', 0.12), 40);
+  },
+  chatReceive() {
+    playTone(520, 0.08, 'sine', 0.15);
+    setTimeout(() => playTone(780, 0.12, 'sine', 0.18), 70);
+  },
 };
 
 /**

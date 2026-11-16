@@ -58,6 +58,11 @@ function handleRoute() {
 
 export const router = {
   init() {
+    const params = new URLSearchParams(window.location.search);
+    const roomParam = params.get('room') || params.get('join');
+    if (roomParam && (!window.location.hash || window.location.hash === '#' || window.location.hash === '#room')) {
+      window.location.hash = 'room';
+    }
     window.addEventListener('hashchange', handleRoute);
     handleRoute();
   },
