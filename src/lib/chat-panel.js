@@ -8,7 +8,6 @@
 import { multiplayer } from './multiplayer.js';
 import { toast } from './toast.js';
 
-let _containerEl = null;
 let _cleanupFns = [];
 let _unreadCount = 0;
 let _isPanelOpen = true; // default open on desktop, toggleable on mobile
@@ -202,10 +201,10 @@ function setupChatEvents(panel, backdrop, toggleBtn, onToggle) {
     if (!multiplayer.isConnected) {
       setTimeout(() => {
         const autoReplies = [
-          "Can't wait to play with you! Tap 'Invite' to share the code with me 💕",
-          "Hey handsome / beautiful! Ready for this round? 😉",
-          "I dare you to pick the spicy cards tonight! 🔥",
-          "Aww sweet! Share the link so we can play live on two phones 💞",
+          'Can\'t wait to play with you! Tap \'Invite\' to share the code with me 💕',
+          'Hey handsome / beautiful! Ready for this round? 😉',
+          'I dare you to pick the spicy cards tonight! 🔥',
+          'Aww sweet! Share the link so we can play live on two phones 💞',
         ];
         const randomReply = autoReplies[Math.floor(Math.random() * autoReplies.length)];
         const simulatedMsg = {
@@ -287,7 +286,7 @@ function setupChatEvents(panel, backdrop, toggleBtn, onToggle) {
     const statusEl = document.getElementById('chat-partner-status');
     if (statusEl) {
       if (isTyping) {
-        statusEl.innerHTML = `<span class="typing-indicator-text">typing<span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span></span>`;
+        statusEl.innerHTML = '<span class="typing-indicator-text">typing<span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span></span>';
         statusEl.classList.add('typing');
       } else {
         statusEl.textContent = multiplayer.isConnected
@@ -344,7 +343,7 @@ function appendMessageBubble(msg, scroll = true) {
     <div class="bubble-text">${escHtml(msg.text)}</div>
     <div class="bubble-meta">
       <span class="bubble-time">${timeStr}</span>
-      ${msg.isMe ? `<span class="bubble-ticks" title="Delivered">✓✓</span>` : ''}
+      ${msg.isMe ? '<span class="bubble-ticks" title="Delivered">✓✓</span>' : ''}
     </div>
   `;
 
@@ -445,8 +444,6 @@ export function unmountChatPanel() {
 
   const fab = document.getElementById('chat-floating-fab');
   if (fab) fab.remove();
-
-  _containerEl = null;
 }
 
 function formatTime(timestamp) {

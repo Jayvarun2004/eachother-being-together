@@ -127,7 +127,7 @@ class MultiplayerManager {
       const s = document.createElement('script');
       s.src = 'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js';
       s.onload = () => resolve(window.Peer);
-      s.onerror = (e) => reject(new Error('Failed to load PeerJS from CDN'));
+      s.onerror = () => reject(new Error('Failed to load PeerJS from CDN'));
       document.head.appendChild(s);
     });
   }
